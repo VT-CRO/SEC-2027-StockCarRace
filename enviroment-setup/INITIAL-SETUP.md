@@ -1,4 +1,14 @@
 # Getting Started with SEC 2027 Environment
+Before you begin, EVERYTHING will be ran from a Linux Virtual System (for Windows, WSL). All instructions should be completed from the Ubuntu terminal.
+
+If on a Windows computer install WSL Ubuntu before continuing. 
+
+IMPORTANT: The version of WSL Ubuntu has to be 22.04.05. This is because the version of ROS2 we use (humble) runs on this version. The installation link can be found here:
+
+https://apps.microsoft.com/detail/9PN20MSR04DW?hl=en-us&gl=US&ocid=pdpshare
+
+The following instructions should be ran on the Ubuntu terminal / the WSL enviroment, NOT on the local terminal.
+
 Install Docker [from here](https://docs.docker.com/desktop/setup/install/windows-install/) if on Windows.
 
 Or do the following
@@ -20,8 +30,6 @@ CD into the repository, and switch to the enviroment-setup branch.
 git switch enviroment-setup
 ```
 
-Now, either use the README file or continue using this one.
-
 ## VT CRO SoutheastCon Jetson Environment Setup
 
 This is a development environment for creating ROS applications. This environment includes GUI features for debugging and developing such as:
@@ -30,15 +38,7 @@ This is a development environment for creating ROS applications. This environmen
 
 # Prereqs 
 
-If on a Windows computer install WSL Ubuntu before continuing. 
-
-IMPORTANT: The version of WSL Ubuntu has to be 22.04.05. This is because the version of ROS2 we use (humble) runs on this version. The installation link can be found here:
-
-https://apps.microsoft.com/detail/9PN20MSR04DW?hl=en-us&gl=US&ocid=pdpshare
-
-The following instructions should be ran on the Ubuntu terminal / the WSL enviroment, NOT powershell.
-
-Before trying to use this workspace make sure you have the nvidia container toolkit installed and docker installed on your system.
+Before trying to use this workspace make sure you have the nvidia container toolkit installed and docker installed on your WSL system.
 
 To install the nvidia container toolkit:
 ```
@@ -56,17 +56,16 @@ sudo apt-get install -y nvidia-container-toolkit
 # How to Build
 
 Prerequisites:
-- Docker Desktop
 - WSL (if windows)
 
 Note: The jetson has an ARM processor, so if you're trying to set up this environment on the jetson, you will need to use the Dockerfile in the balena directory.
 
-Build the image using
+CD into the same level as the Dockerfile. Build the image using
 
 ```
 docker build -t vt-cro/ros-env .
 ```
-This process will take a long time. That is ok.
+This process will take a long time (~1 hour)
 
 IMPORTANT: Before running the container, make sure to run the command `xhost +local:` on your host system (if you're on a Linux system or a Linux Virtual Enviroment (WSL)) BEFORE running the launch script. This will grant the container to access your host's X server, allowing you to run graphical applications such as rviz or gazebo. No further setup is needed if running with a Windows or Mac host. 
 
@@ -89,7 +88,7 @@ Navigate to the workspace (`/home/ros/ws`) and run the following commands to ins
 ```
 sudo apt update
 source install/setup.bash
-rosdep --install-from-paths src -y --ignore-src
+rosdep install --from-paths src -y --ignore-src
 ```
 
 If the above doesn't work, try
@@ -102,7 +101,7 @@ rosdep install --from-paths src --ignore-src -r -y
 
 If there is no ```/src``` directory, make one. Then run those commands again.
 
-Clone the SEC-2027-StockCarRace repository into ```/ws```
+Clone the SEC-2027-StockCarRace repository into ```/ws/src```
 ```
 git clone https://github.com/VT-CRO/SEC-2027-StockCarRace.git
 ```
@@ -115,6 +114,8 @@ colcon build --packages-select apriltag_ros
 colcon build
 ```
 This will take a while.
+
+As of 9/22, the packages are not yet in the repository yet. 
 
 Now source the workspace again, and is is ready to use.
 
