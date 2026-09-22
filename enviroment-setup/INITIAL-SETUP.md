@@ -9,16 +9,14 @@ https://apps.microsoft.com/detail/9PN20MSR04DW?hl=en-us&gl=US&ocid=pdpshare
 
 The following instructions should be ran on the Ubuntu terminal / the WSL enviroment, NOT on the local terminal.
 
-Install Docker [from here](https://docs.docker.com/desktop/setup/install/windows-install/) if on Windows.
-
-Or do the following
+To install Docker in the Ubuntu terminal:
 ```
 sudo apt-get update && sudo apt-get upgrade -y
 
 sudo apt-get install docker.io
 ```
 
-Run Docker by opening Docker Desktop on Windows or using ```sudo systemctl start docker``` on Linux.
+Run Docker by using ```sudo systemctl start docker``` on Linux.
 
 Clone the SEC-2027-StockCarRace repository in a directory of your choosing.
 ```
