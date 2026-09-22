@@ -60,8 +60,9 @@ Build the image using
 ```
 docker build -t vt-cro/ros-env .
 ```
+This process will take a long time. That is ok.
 
-IMPORTANT: Before running the container, make sure to run the command `xhost +local:` on your host system (if you're on a Linux system). This will grant the container to access your host's X server, allowing you to run graphical applications such as rviz or gazebo. No further setup is needed if running with a Windows or Mac hsot.
+IMPORTANT: Before running the container, make sure to run the command `xhost +local:` on your host system (if you're on a Linux system or a Linux Virtual Enviroment (WSL)) BEFORE running the launch script. This will grant the container to access your host's X server, allowing you to run graphical applications such as rviz or gazebo. No further setup is needed if running with a Windows or Mac host. 
 
 Finally, you can run the container by running `launch.sh` shell script if you have a gpu and the `launch_no_gpu.sh` if no gpu is present in your system
 Place your workspace in `./src/` and you will be able to access it within the container at `/home/ros/ws/`.
