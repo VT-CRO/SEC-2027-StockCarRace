@@ -76,6 +76,10 @@ RUN apt-get update \
 
 COPY entrypoint.sh /entrypoint.sh
 
+# Create the workspace and hand it to $USERNAME while we are still root.
+RUN mkdir -p /home/$USERNAME/ws \
+  && chown -R $USER_UID:$USER_GID /home/$USERNAME/ws
+
 WORKDIR /home/ros/ws/
 
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

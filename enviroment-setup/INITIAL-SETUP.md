@@ -32,6 +32,12 @@ This is a development environment for creating ROS applications. This environmen
 
 If on a Windows computer install WSL Ubuntu before continuing. 
 
+IMPORTANT: The version of WSL Ubuntu has to be 22.04.05. This is because the version of ROS2 we use (humble) runs on this version. The installation link can be found here:
+
+https://apps.microsoft.com/detail/9PN20MSR04DW?hl=en-us&gl=US&ocid=pdpshare
+
+The following instructions should be ran on the Ubuntu terminal / the WSL enviroment, NOT powershell.
+
 Before trying to use this workspace make sure you have the nvidia container toolkit installed and docker installed on your system.
 
 To install the nvidia container toolkit:
@@ -67,6 +73,16 @@ IMPORTANT: Before running the container, make sure to run the command `xhost +lo
 Finally, you can run the container by running `launch.sh` shell script if you have a gpu and the `launch_no_gpu.sh` if no gpu is present in your system
 Place your workspace in `./src/` and you will be able to access it within the container at `/home/ros/ws/`.
 
+You may need to give permission to execute the script:
+```
+chmod +x scriptname (either launch.sh or launch_no_gpu.sh)
+```
+
+To execute the script:
+```
+sudo ./scriptname (either launch.sh or launch_no_gpu.sh)
+```
+
 # How to Build Workspace
 Navigate to the workspace (`/home/ros/ws`) and run the following commands to install all required dependencies for the ROS workspace:
 
@@ -101,6 +117,28 @@ colcon build
 This will take a while.
 
 Now source the workspace again, and is is ready to use.
+
+# To open / close the image
+To check what containers are currently running / not running:
+
+```
+docker ps -a
+```
+
+To start a container:
+```
+docker start "image_name"
+```
+
+To enter a container:
+```
+docker exec -it "image_name" /bin/bash
+```
+
+To stop a container:
+```
+docker stop "image_name"
+```
 
 # Tips for Troubleshooting
 
