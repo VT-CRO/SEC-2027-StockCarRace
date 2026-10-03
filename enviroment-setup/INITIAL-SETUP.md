@@ -7,7 +7,13 @@ IMPORTANT: The version of WSL Ubuntu has to be 22.04.05. This is because the ver
 
 https://apps.microsoft.com/detail/9PN20MSR04DW?hl=en-us&gl=US&ocid=pdpshare
 
-The following instructions should be ran on the Ubuntu terminal / the WSL enviroment, NOT on the local terminal.
+If that doesn't work, directly install it from the terminal:
+
+```
+wsl --install -d Ubuntu-22.04
+```
+
+The following instructions below should be ran on the Ubuntu 22.04 terminal / the WSL enviroment, NOT on the local terminal.
 
 To install Docker in the Ubuntu terminal:
 ```
@@ -58,6 +64,8 @@ Prerequisites:
 
 Note: The jetson has an ARM processor, so if you're trying to set up this environment on the jetson, you will need to use the Dockerfile in the balena directory.
 
+IMPORTANT: Before running the container, make sure to run the command `xhost +local:` on your host system (if you're on a Linux system or a Linux Virtual Enviroment (WSL)) BEFORE running the launch script. This will grant the container to access your host's X server, allowing you to run graphical applications such as rviz or gazebo. No further setup is needed if running with a Windows or Mac host. 
+
 CD into the same level as the Dockerfile. Build the image using
 
 ```
@@ -65,7 +73,6 @@ docker build -t vt-cro/ros-env .
 ```
 This process will take a long time (~1 hour)
 
-IMPORTANT: Before running the container, make sure to run the command `xhost +local:` on your host system (if you're on a Linux system or a Linux Virtual Enviroment (WSL)) BEFORE running the launch script. This will grant the container to access your host's X server, allowing you to run graphical applications such as rviz or gazebo. No further setup is needed if running with a Windows or Mac host. 
 
 Finally, you can run the container by running `launch.sh` shell script if you have a gpu and the `launch_no_gpu.sh` if no gpu is present in your system
 Place your workspace in `./src/` and you will be able to access it within the container at `/home/ros/ws/`.
@@ -83,13 +90,6 @@ sudo ./scriptname (either launch.sh or launch_no_gpu.sh)
 # How to Build Workspace
 Navigate to the workspace (`/home/ros/ws`) and run the following commands to install all required dependencies for the ROS workspace:
 
-```
-sudo apt update
-source install/setup.bash
-rosdep install --from-paths src -y --ignore-src
-```
-
-If the above doesn't work, try
 ```
 sudo apt update
 source /opt/ros/humble/setup.bash
@@ -117,7 +117,7 @@ As of 9/22, the packages are not yet in the repository yet.
 
 Now source the workspace again, and is is ready to use.
 
-# To open / close the image
+# Container commands
 To check what containers are currently running / not running:
 
 ```
@@ -137,6 +137,16 @@ docker exec -it "image_name" /bin/bash
 To stop a container:
 ```
 docker stop "image_name"
+```
+# Running ROS
+Before running any ROS packages, **it is crucial that you source ROS to access ROS functions. You only need to do this once per instance**
+
+```
+source install/setup.bash
+```
+Then to launch a ros package:
+```
+ros2 launch <package name> <launch file>
 ```
 
 # Tips for Troubleshooting
