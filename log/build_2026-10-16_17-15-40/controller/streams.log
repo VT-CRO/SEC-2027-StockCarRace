@@ -1,0 +1,20 @@
+[0.007s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/controller -- -j12 -l12
+[0.014s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/controller -- -j12 -l12
+[0.022s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/controller
+[0.025s] -- Install configuration: ""
+[0.025s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/package_run_dependencies/controller
+[0.025s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/parent_prefix_path/controller
+[0.025s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/ament_prefix_path.sh
+[0.025s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/ament_prefix_path.dsv
+[0.025s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/path.sh
+[0.025s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/path.dsv
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.bash
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.sh
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.zsh
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.dsv
+[0.026s] -- Installing: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/package.dsv
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/packages/controller
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/cmake/controllerConfig.cmake
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/cmake/controllerConfig-version.cmake
+[0.026s] -- Up-to-date: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/package.xml
+[0.027s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/controller

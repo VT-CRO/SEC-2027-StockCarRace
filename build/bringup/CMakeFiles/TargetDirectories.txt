@@ -1,0 +1,9 @@
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/uninstall.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/bringup_uninstall.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/test.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/edit_cache.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/rebuild_cache.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/list_install_components.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/install.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/install/local.dir
+/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup/CMakeFiles/install/strip.dir

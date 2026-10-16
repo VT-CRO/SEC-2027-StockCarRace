@@ -1,0 +1,15 @@
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/package_run_dependencies/controller
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/parent_prefix_path/controller
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/ament_prefix_path.sh
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/ament_prefix_path.dsv
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/path.sh
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/path.dsv
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.bash
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.sh
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.zsh
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.dsv
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/package.dsv
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/packages/controller
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/cmake/controllerConfig.cmake
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/cmake/controllerConfig-version.cmake
+/home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/package.xml
