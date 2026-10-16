@@ -1,4 +1,0 @@
-Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/bringup -- -j12 -l12
-Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/bringup -- -j12 -l12
-Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/bringup
-Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/bringup
