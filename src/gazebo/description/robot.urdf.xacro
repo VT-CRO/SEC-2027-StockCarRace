@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="stock_car">
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.4"/>
+      <geometry>
+        <box size="2.0 1.0 0.5"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.4"/>
+      <geometry>
+        <box size="2.0 1.0 0.5"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.4"/>
+      <mass value="1.14395"/>
+      <inertia ixx="0.095329" ixy="0" ixz="0" iyy="0.381317" iyz="0" izz="0.476646"/>
+    </inertial>
+  </link>
+
+  <xacro:macro name="wheel" params="name y">
+    <link name="${name}">
+      <visual>
+        <origin rpy="-1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="0.4" length="0.2"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin rpy="-1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="0.4" length="0.2"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="-0.5 ${y} 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:wheel name="left_wheel" y="0.6"/>
+  <xacro:wheel name="right_wheel" y="-0.6"/>
+
+  <link name="caster">
+    <visual>
+      <geometry>
+        <sphere radius="0.2"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.2"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster"/>
+    <origin xyz="0.8 0 -0.2"/>
+  </joint>
+</robot>
