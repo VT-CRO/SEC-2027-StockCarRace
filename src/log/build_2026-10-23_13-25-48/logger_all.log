@@ -1,0 +1,370 @@
+[0.281s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.282s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=12, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x7634590d8430>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x763459255d20>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x763459255d20>>, mixin_verb=('build',))
+[0.605s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.606s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.606s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.606s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.606s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.606s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.606s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ros/ws/src/SEC-2027-StockCarRace/src'
+[0.606s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.606s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.606s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.607s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.607s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.607s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.607s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.607s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.607s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.656s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.657s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.657s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.657s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.657s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.658s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extensions ['ignore', 'ignore_ament_install']
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extension 'ignore'
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extension 'ignore_ament_install'
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extensions ['colcon_pkg']
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extension 'colcon_pkg'
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extensions ['colcon_meta']
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extension 'colcon_meta'
+[0.659s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extensions ['ros']
+[0.660s] Level 1:colcon.colcon_core.package_identification:_identify(autonomous) by extension 'ros'
+[0.678s] DEBUG:colcon.colcon_core.package_identification:Package 'autonomous' with type 'ros.ament_cmake' and name 'autonomous'
+[0.678s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extensions ['ignore', 'ignore_ament_install']
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extension 'ignore'
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extension 'ignore_ament_install'
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extensions ['colcon_pkg']
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extension 'colcon_pkg'
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extensions ['colcon_meta']
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extension 'colcon_meta'
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extensions ['ros']
+[0.679s] Level 1:colcon.colcon_core.package_identification:_identify(bringup) by extension 'ros'
+[0.680s] DEBUG:colcon.colcon_core.package_identification:Package 'bringup' with type 'ros.ament_cmake' and name 'bringup'
+[0.681s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.682s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.682s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.688s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extensions ['ignore', 'ignore_ament_install']
+[0.689s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extension 'ignore'
+[0.689s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extension 'ignore_ament_install'
+[0.689s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extensions ['colcon_pkg']
+[0.689s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extension 'colcon_pkg'
+[0.690s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extensions ['colcon_meta']
+[0.690s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extension 'colcon_meta'
+[0.690s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extensions ['ros']
+[0.690s] Level 1:colcon.colcon_core.package_identification:_identify(controller) by extension 'ros'
+[0.692s] DEBUG:colcon.colcon_core.package_identification:Package 'controller' with type 'ros.ament_cmake' and name 'controller'
+[0.692s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extensions ['ignore', 'ignore_ament_install']
+[0.693s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extension 'ignore'
+[0.693s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extension 'ignore_ament_install'
+[0.693s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extensions ['colcon_pkg']
+[0.693s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extension 'colcon_pkg'
+[0.698s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extensions ['colcon_meta']
+[0.698s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extension 'colcon_meta'
+[0.698s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extensions ['ros']
+[0.698s] Level 1:colcon.colcon_core.package_identification:_identify(gazebo) by extension 'ros'
+[0.700s] DEBUG:colcon.colcon_core.package_identification:Package 'gazebo' with type 'ros.ament_cmake' and name 'gazebo'
+[0.703s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extensions ['ignore', 'ignore_ament_install']
+[0.704s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extension 'ignore'
+[0.704s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extension 'ignore_ament_install'
+[0.704s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extensions ['colcon_pkg']
+[0.704s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extension 'colcon_pkg'
+[0.704s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extensions ['colcon_meta']
+[0.704s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extension 'colcon_meta'
+[0.705s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extensions ['ros']
+[0.705s] Level 1:colcon.colcon_core.package_identification:_identify(hardware) by extension 'ros'
+[0.706s] DEBUG:colcon.colcon_core.package_identification:Package 'hardware' with type 'ros.ament_cmake' and name 'hardware'
+[0.706s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.707s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.707s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.707s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.708s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.708s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.708s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.787s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'cmake_args' from command line to 'None'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'cmake_target' from command line to 'None'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'cmake_clean_cache' from command line to 'False'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'cmake_clean_first' from command line to 'False'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'cmake_force_configure' from command line to 'False'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'ament_cmake_args' from command line to 'None'
+[0.788s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'catkin_cmake_args' from command line to 'None'
+[0.789s] Level 5:colcon.colcon_core.verb:set package 'autonomous' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.789s] DEBUG:colcon.colcon_core.verb:Building package 'autonomous' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous', 'merge_install': False, 'path': '/home/ros/ws/src/SEC-2027-StockCarRace/src/autonomous', 'symlink_install': False, 'test_result_base': None}
+[0.790s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'cmake_args' from command line to 'None'
+[0.790s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'cmake_target' from command line to 'None'
+[0.790s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.790s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'cmake_clean_cache' from command line to 'False'
+[0.790s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'cmake_clean_first' from command line to 'False'
+[0.790s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'cmake_force_configure' from command line to 'False'
+[0.791s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'ament_cmake_args' from command line to 'None'
+[0.791s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'catkin_cmake_args' from command line to 'None'
+[0.791s] Level 5:colcon.colcon_core.verb:set package 'bringup' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.791s] DEBUG:colcon.colcon_core.verb:Building package 'bringup' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup', 'merge_install': False, 'path': '/home/ros/ws/src/SEC-2027-StockCarRace/src/bringup', 'symlink_install': False, 'test_result_base': None}
+[0.792s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'cmake_args' from command line to 'None'
+[0.792s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'cmake_target' from command line to 'None'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'cmake_clean_cache' from command line to 'False'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'cmake_clean_first' from command line to 'False'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'cmake_force_configure' from command line to 'False'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'ament_cmake_args' from command line to 'None'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'catkin_cmake_args' from command line to 'None'
+[0.793s] Level 5:colcon.colcon_core.verb:set package 'controller' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.793s] DEBUG:colcon.colcon_core.verb:Building package 'controller' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller', 'merge_install': False, 'path': '/home/ros/ws/src/SEC-2027-StockCarRace/src/controller', 'symlink_install': False, 'test_result_base': None}
+[0.794s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'cmake_args' from command line to 'None'
+[0.794s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'cmake_target' from command line to 'None'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'cmake_clean_cache' from command line to 'False'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'cmake_clean_first' from command line to 'False'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'cmake_force_configure' from command line to 'False'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'ament_cmake_args' from command line to 'None'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'catkin_cmake_args' from command line to 'None'
+[0.795s] Level 5:colcon.colcon_core.verb:set package 'gazebo' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.795s] DEBUG:colcon.colcon_core.verb:Building package 'gazebo' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo', 'merge_install': False, 'path': '/home/ros/ws/src/SEC-2027-StockCarRace/src/gazebo', 'symlink_install': False, 'test_result_base': None}
+[0.796s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'cmake_args' from command line to 'None'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'cmake_target' from command line to 'None'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'cmake_clean_cache' from command line to 'False'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'cmake_clean_first' from command line to 'False'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'cmake_force_configure' from command line to 'False'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'ament_cmake_args' from command line to 'None'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'catkin_cmake_args' from command line to 'None'
+[0.797s] Level 5:colcon.colcon_core.verb:set package 'hardware' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.797s] DEBUG:colcon.colcon_core.verb:Building package 'hardware' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware', 'merge_install': False, 'path': '/home/ros/ws/src/SEC-2027-StockCarRace/src/hardware', 'symlink_install': False, 'test_result_base': None}
+[0.798s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.802s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.803s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/autonomous' with build type 'ament_cmake'
+[0.804s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/autonomous'
+[0.812s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.812s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.813s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.830s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/bringup' with build type 'ament_cmake'
+[0.831s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/bringup'
+[0.831s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.832s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.843s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/controller' with build type 'ament_cmake'
+[0.844s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/controller'
+[0.845s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.845s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.858s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/gazebo' with build type 'ament_cmake'
+[0.858s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/gazebo'
+[0.859s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.859s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.874s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/hardware' with build type 'ament_cmake'
+[0.875s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ros/ws/src/SEC-2027-StockCarRace/src/hardware'
+[0.876s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.876s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.924s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous -- -j12 -l12
+[0.943s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup -- -j12 -l12
+[0.958s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller -- -j12 -l12
+[0.981s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo -- -j12 -l12
+[0.988s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware -- -j12 -l12
+[1.067s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup -- -j12 -l12
+[1.099s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup
+[1.104s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller -- -j12 -l12
+[1.114s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller
+[1.143s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bringup)
+[1.161s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware -- -j12 -l12
+[1.165s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware
+[1.169s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/bringup
+[1.183s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup' for CMake module files
+[1.194s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup' for CMake config files
+[1.197s] Level 1:colcon.colcon_core.shell:create_environment_hook('bringup', 'cmake_prefix_path')
+[1.198s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/hook/cmake_prefix_path.ps1'
+[1.203s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/hook/cmake_prefix_path.dsv'
+[1.210s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/hook/cmake_prefix_path.sh'
+[1.215s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/bin'
+[1.216s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/lib/pkgconfig/bringup.pc'
+[1.223s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/lib/python3.10/site-packages'
+[1.226s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/bin'
+[1.228s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.ps1'
+[1.234s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.dsv'
+[1.236s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.sh'
+[1.239s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.bash'
+[1.244s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.zsh'
+[1.247s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/colcon-core/packages/bringup)
+[1.248s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bringup)
+[1.249s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup' for CMake module files
+[1.251s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup' for CMake config files
+[1.251s] Level 1:colcon.colcon_core.shell:create_environment_hook('bringup', 'cmake_prefix_path')
+[1.252s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/hook/cmake_prefix_path.ps1'
+[1.253s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/hook/cmake_prefix_path.dsv'
+[1.255s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/hook/cmake_prefix_path.sh'
+[1.258s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/bin'
+[1.258s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/lib/pkgconfig/bringup.pc'
+[1.258s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/lib/python3.10/site-packages'
+[1.259s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/bin'
+[1.260s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.ps1'
+[1.263s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.dsv'
+[1.264s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.sh'
+[1.266s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.bash'
+[1.268s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/bringup/package.zsh'
+[1.269s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/bringup/share/colcon-core/packages/bringup)
+[1.279s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(controller)
+[1.280s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller' for CMake module files
+[1.283s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/controller
+[1.284s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller' for CMake config files
+[1.285s] Level 1:colcon.colcon_core.shell:create_environment_hook('controller', 'cmake_prefix_path')
+[1.286s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/hook/cmake_prefix_path.ps1'
+[1.287s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/hook/cmake_prefix_path.dsv'
+[1.289s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/hook/cmake_prefix_path.sh'
+[1.291s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/bin'
+[1.292s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/lib/pkgconfig/controller.pc'
+[1.292s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/lib/python3.10/site-packages'
+[1.293s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/bin'
+[1.294s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.ps1'
+[1.296s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.dsv'
+[1.297s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.sh'
+[1.298s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.bash'
+[1.299s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.zsh'
+[1.299s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/colcon-core/packages/controller)
+[1.300s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(controller)
+[1.300s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller' for CMake module files
+[1.301s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller' for CMake config files
+[1.301s] Level 1:colcon.colcon_core.shell:create_environment_hook('controller', 'cmake_prefix_path')
+[1.302s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/hook/cmake_prefix_path.ps1'
+[1.303s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/hook/cmake_prefix_path.dsv'
+[1.303s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/hook/cmake_prefix_path.sh'
+[1.304s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/bin'
+[1.304s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/lib/pkgconfig/controller.pc'
+[1.305s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/lib/python3.10/site-packages'
+[1.306s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/bin'
+[1.307s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.ps1'
+[1.311s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.dsv'
+[1.313s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.sh'
+[1.315s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.bash'
+[1.316s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/controller/package.zsh'
+[1.317s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/controller/share/colcon-core/packages/controller)
+[1.318s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(hardware)
+[1.319s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware' for CMake module files
+[1.323s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/hardware
+[1.324s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware' for CMake config files
+[1.325s] Level 1:colcon.colcon_core.shell:create_environment_hook('hardware', 'cmake_prefix_path')
+[1.327s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/hook/cmake_prefix_path.ps1'
+[1.329s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/hook/cmake_prefix_path.dsv'
+[1.330s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/hook/cmake_prefix_path.sh'
+[1.333s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/bin'
+[1.333s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/lib/pkgconfig/hardware.pc'
+[1.334s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/lib/python3.10/site-packages'
+[1.335s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/bin'
+[1.336s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.ps1'
+[1.337s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.dsv'
+[1.338s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.sh'
+[1.339s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.bash'
+[1.340s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.zsh'
+[1.341s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/colcon-core/packages/hardware)
+[1.342s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(hardware)
+[1.343s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware' for CMake module files
+[1.344s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware' for CMake config files
+[1.344s] Level 1:colcon.colcon_core.shell:create_environment_hook('hardware', 'cmake_prefix_path')
+[1.345s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/hook/cmake_prefix_path.ps1'
+[1.346s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/hook/cmake_prefix_path.dsv'
+[1.347s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/hook/cmake_prefix_path.sh'
+[1.348s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/bin'
+[1.348s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/lib/pkgconfig/hardware.pc'
+[1.349s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/lib/python3.10/site-packages'
+[1.350s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/bin'
+[1.351s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.ps1'
+[1.353s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.dsv'
+[1.357s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.sh'
+[1.358s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.bash'
+[1.360s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/hardware/package.zsh'
+[1.360s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/hardware/share/colcon-core/packages/hardware)
+[1.608s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo -- -j12 -l12
+[1.614s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo
+[1.637s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(gazebo)
+[1.638s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo' for CMake module files
+[1.639s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo
+[1.641s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo' for CMake config files
+[1.641s] Level 1:colcon.colcon_core.shell:create_environment_hook('gazebo', 'cmake_prefix_path')
+[1.642s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/hook/cmake_prefix_path.ps1'
+[1.643s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/hook/cmake_prefix_path.dsv'
+[1.646s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/hook/cmake_prefix_path.sh'
+[1.648s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/bin'
+[1.648s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/lib/pkgconfig/gazebo.pc'
+[1.649s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/lib/python3.10/site-packages'
+[1.650s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/bin'
+[1.650s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.ps1'
+[1.651s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.dsv'
+[1.652s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.sh'
+[1.653s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.bash'
+[1.654s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.zsh'
+[1.655s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/colcon-core/packages/gazebo)
+[1.657s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(gazebo)
+[1.658s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo' for CMake module files
+[1.658s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo' for CMake config files
+[1.659s] Level 1:colcon.colcon_core.shell:create_environment_hook('gazebo', 'cmake_prefix_path')
+[1.659s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/hook/cmake_prefix_path.ps1'
+[1.660s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/hook/cmake_prefix_path.dsv'
+[1.661s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/hook/cmake_prefix_path.sh'
+[1.663s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/bin'
+[1.663s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/lib/pkgconfig/gazebo.pc'
+[1.664s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/lib/python3.10/site-packages'
+[1.665s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/bin'
+[1.666s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.ps1'
+[1.669s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.dsv'
+[1.671s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.sh'
+[1.673s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.bash'
+[1.674s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/gazebo/package.zsh'
+[1.675s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/gazebo/share/colcon-core/packages/gazebo)
+[2.349s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous -- -j12 -l12
+[2.353s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous
+[2.374s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(autonomous)
+[2.376s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous' for CMake module files
+[2.376s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/src/build/autonomous
+[2.377s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous' for CMake config files
+[2.378s] Level 1:colcon.colcon_core.shell:create_environment_hook('autonomous', 'cmake_prefix_path')
+[2.378s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/hook/cmake_prefix_path.ps1'
+[2.379s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/hook/cmake_prefix_path.dsv'
+[2.380s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/hook/cmake_prefix_path.sh'
+[2.381s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/bin'
+[2.381s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/lib/pkgconfig/autonomous.pc'
+[2.381s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/lib/python3.10/site-packages'
+[2.382s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/bin'
+[2.382s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.ps1'
+[2.383s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.dsv'
+[2.384s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.sh'
+[2.384s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.bash'
+[2.385s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.zsh'
+[2.386s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/colcon-core/packages/autonomous)
+[2.386s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(autonomous)
+[2.387s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous' for CMake module files
+[2.387s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous' for CMake config files
+[2.387s] Level 1:colcon.colcon_core.shell:create_environment_hook('autonomous', 'cmake_prefix_path')
+[2.387s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/hook/cmake_prefix_path.ps1'
+[2.388s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/hook/cmake_prefix_path.dsv'
+[2.388s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/hook/cmake_prefix_path.sh'
+[2.389s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/bin'
+[2.390s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/lib/pkgconfig/autonomous.pc'
+[2.390s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/lib/python3.10/site-packages'
+[2.391s] Level 1:colcon.colcon_core.environment:checking '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/bin'
+[2.391s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.ps1'
+[2.392s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.dsv'
+[2.392s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.sh'
+[2.393s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.bash'
+[2.394s] INFO:colcon.colcon_core.shell:Creating package script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/autonomous/package.zsh'
+[2.394s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ros/ws/src/SEC-2027-StockCarRace/src/install/autonomous/share/colcon-core/packages/autonomous)
+[2.395s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[2.396s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[2.396s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[2.396s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[2.405s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[2.406s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[2.406s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[2.407s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[2.411s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.Spawn.ExecFailed: /usr/bin/dbus-launch terminated abnormally without any error message
+[2.412s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[2.413s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/local_setup.ps1'
+[2.415s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/_local_setup_util_ps1.py'
+[2.419s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/setup.ps1'
+[2.424s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/local_setup.sh'
+[2.428s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/_local_setup_util_sh.py'
+[2.429s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/setup.sh'
+[2.431s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/local_setup.bash'
+[2.432s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/setup.bash'
+[2.433s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/local_setup.zsh'
+[2.434s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ros/ws/src/SEC-2027-StockCarRace/src/install/setup.zsh'
