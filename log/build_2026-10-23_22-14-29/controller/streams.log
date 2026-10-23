@@ -1,0 +1,44 @@
+[0.142s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ros/ws/src/SEC-2027-StockCarRace/src/controller -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ros/ws/src/SEC-2027-StockCarRace/install/controller
+[0.325s] -- The C compiler identification is GNU 11.4.0
+[0.454s] -- The CXX compiler identification is GNU 11.4.0
+[0.475s] -- Detecting C compiler ABI info
+[0.702s] -- Detecting C compiler ABI info - done
+[0.722s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.722s] -- Detecting C compile features
+[0.723s] -- Detecting C compile features - done
+[0.731s] -- Detecting CXX compiler ABI info
+[0.999s] -- Detecting CXX compiler ABI info - done
+[1.011s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.012s] -- Detecting CXX compile features
+[1.013s] -- Detecting CXX compile features - done
+[1.051s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.426s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[1.583s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.890s] -- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[2.146s] -- Added test 'lint_cmake' to check CMake code style
+[2.151s] -- Added test 'xmllint' to check XML markup files
+[2.158s] -- Configuring done
+[2.183s] -- Generating done
+[2.191s] -- Build files have been written to: /home/ros/ws/src/SEC-2027-StockCarRace/build/controller
+[2.226s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ros/ws/src/SEC-2027-StockCarRace/src/controller -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ros/ws/src/SEC-2027-StockCarRace/install/controller
+[2.230s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/controller -- -j16 -l16
+[2.340s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/controller -- -j16 -l16
+[2.344s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/controller
+[2.366s] -- Install configuration: ""
+[2.366s] -- Execute custom install script
+[2.373s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/package_run_dependencies/controller
+[2.400s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/parent_prefix_path/controller
+[2.428s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/ament_prefix_path.sh
+[2.459s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/ament_prefix_path.dsv
+[2.485s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/path.sh
+[2.514s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/environment/path.dsv
+[2.544s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.bash
+[2.576s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.sh
+[2.606s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.zsh
+[2.632s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/local_setup.dsv
+[2.665s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/package.dsv
+[2.697s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/ament_index/resource_index/packages/controller
+[2.731s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/cmake/controllerConfig.cmake
+[2.766s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/cmake/controllerConfig-version.cmake
+[2.801s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/controller/share/controller/package.xml
+[2.867s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/controller' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/controller

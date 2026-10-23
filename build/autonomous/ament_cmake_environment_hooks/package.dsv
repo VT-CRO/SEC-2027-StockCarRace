@@ -1,0 +1,4 @@
+source;share/autonomous/local_setup.bash
+source;share/autonomous/local_setup.dsv
+source;share/autonomous/local_setup.sh
+source;share/autonomous/local_setup.zsh

@@ -1,0 +1,1 @@
+/home/ros/ws/src/SEC-2027-StockCarRace/build/hardware/ament_cmake_core/hardwareConfig.cmake

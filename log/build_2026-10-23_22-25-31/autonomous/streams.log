@@ -1,0 +1,21 @@
+[0.119s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous -- -j16 -l16
+[0.301s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous -- -j16 -l16
+[0.307s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous
+[0.358s] -- Install configuration: ""
+[0.359s] -- Execute custom install script
+[0.359s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/ament_index/resource_index/package_run_dependencies/autonomous
+[0.359s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/ament_index/resource_index/parent_prefix_path/autonomous
+[0.359s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/environment/ament_prefix_path.sh
+[0.359s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/environment/ament_prefix_path.dsv
+[0.360s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/environment/path.sh
+[0.360s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/environment/path.dsv
+[0.361s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/local_setup.bash
+[0.362s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/local_setup.sh
+[0.362s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/local_setup.zsh
+[0.362s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/local_setup.dsv
+[0.364s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/package.dsv
+[0.416s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/ament_index/resource_index/packages/autonomous
+[0.417s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/cmake/autonomousConfig.cmake
+[0.418s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/cmake/autonomousConfig-version.cmake
+[0.419s] -- Up-to-date symlink: /home/ros/ws/src/SEC-2027-StockCarRace/install/autonomous/share/autonomous/package.xml
+[0.505s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/autonomous

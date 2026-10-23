@@ -1,0 +1,1 @@
+/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo/ament_cmake_environment_hooks/local_setup.sh

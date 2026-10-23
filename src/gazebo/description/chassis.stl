@@ -1,0 +1,142 @@
+solid triangular_chassis
+  facet normal 0 0 -1
+    outer loop
+      vertex 0.052 -0.0305 0
+      vertex 0.052 0.0305 0
+      vertex 0 0.0805 0
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 0.052 -0.0305 0
+      vertex 0 0.0805 0
+      vertex -0.052 0.0805 0
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 0.052 -0.0305 0
+      vertex -0.052 0.0805 0
+      vertex -0.052 -0.0805 0
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 0.052 -0.0305 0
+      vertex -0.052 -0.0805 0
+      vertex 0 -0.0805 0
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0.052 -0.0305 0.01
+      vertex 0 0.0805 0.01
+      vertex 0.052 0.0305 0.01
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0.052 -0.0305 0.01
+      vertex -0.052 0.0805 0.01
+      vertex 0 0.0805 0.01
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0.052 -0.0305 0.01
+      vertex -0.052 -0.0805 0.01
+      vertex -0.052 0.0805 0.01
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0.052 -0.0305 0.01
+      vertex 0 -0.0805 0.01
+      vertex -0.052 -0.0805 0.01
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0.052 0.0305 0
+      vertex 0.052 0.0305 0.01
+      vertex 0 0.0805 0.01
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0.052 0.0305 0
+      vertex 0 0.0805 0.01
+      vertex 0 0.0805 0
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0 0.0805 0
+      vertex 0 0.0805 0.01
+      vertex -0.052 0.0805 0.01
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0 0.0805 0
+      vertex -0.052 0.0805 0.01
+      vertex -0.052 0.0805 0
+    endloop
+  endfacet
+  facet normal -1 0 0
+    outer loop
+      vertex -0.052 0.0805 0
+      vertex -0.052 0.0805 0.01
+      vertex -0.052 -0.0805 0.01
+    endloop
+  endfacet
+  facet normal -1 0 0
+    outer loop
+      vertex -0.052 0.0805 0
+      vertex -0.052 -0.0805 0.01
+      vertex -0.052 -0.0805 0
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex -0.052 -0.0805 0
+      vertex -0.052 -0.0805 0.01
+      vertex 0 -0.0805 0.01
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex -0.052 -0.0805 0
+      vertex 0 -0.0805 0.01
+      vertex 0 -0.0805 0
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex 0 -0.0805 0
+      vertex 0 -0.0805 0.01
+      vertex 0.052 -0.0305 0.01
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex 0 -0.0805 0
+      vertex 0.052 -0.0305 0.01
+      vertex 0.052 -0.0305 0
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 0.052 -0.0305 0
+      vertex 0.052 -0.0305 0.01
+      vertex 0.052 0.0305 0.01
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 0.052 -0.0305 0
+      vertex 0.052 0.0305 0.01
+      vertex 0.052 0.0305 0
+    endloop
+  endfacet
+endsolid triangular_chassis
