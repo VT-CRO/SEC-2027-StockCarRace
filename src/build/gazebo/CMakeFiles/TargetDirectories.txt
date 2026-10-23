@@ -1,9 +1,0 @@
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/uninstall.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/gazebo_uninstall.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/test.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/edit_cache.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/rebuild_cache.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/list_install_components.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/install.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/install/local.dir
-/home/ros/ws/src/SEC-2027-StockCarRace/src/build/gazebo/CMakeFiles/install/strip.dir
