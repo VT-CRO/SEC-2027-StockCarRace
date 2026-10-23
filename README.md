@@ -1,5 +1,5 @@
-# SEC-2027-StockCarRace's Parallel-Team-Template
-A skeleton for the parallel teams to use when writing the software for their respective robots.
+# SEC-2027-StockCarRace's Follow Along Tutorial Examples
+Branch im using to publish examples of lessons every meeting
 
 ## Structure Overview
 In general, the robot code should follow the following structure:
