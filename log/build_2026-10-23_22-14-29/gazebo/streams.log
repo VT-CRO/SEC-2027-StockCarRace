@@ -1,0 +1,49 @@
+[0.162s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ros/ws/src/SEC-2027-StockCarRace/src/gazebo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo
+[0.328s] -- The C compiler identification is GNU 11.4.0
+[0.451s] -- The CXX compiler identification is GNU 11.4.0
+[0.471s] -- Detecting C compiler ABI info
+[0.699s] -- Detecting C compiler ABI info - done
+[0.716s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.717s] -- Detecting C compile features
+[0.718s] -- Detecting C compile features - done
+[0.727s] -- Detecting CXX compiler ABI info
+[0.970s] -- Detecting CXX compiler ABI info - done
+[0.984s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.984s] -- Detecting CXX compile features
+[0.985s] -- Detecting CXX compile features - done
+[1.027s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.402s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[1.568s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.865s] -- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[2.123s] -- Added test 'flake8' to check Python code syntax and style conventions
+[2.129s] -- Added test 'lint_cmake' to check CMake code style
+[2.132s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[2.137s] -- Added test 'xmllint' to check XML markup files
+[2.145s] -- Configuring done
+[2.176s] -- Generating done
+[2.189s] -- Build files have been written to: /home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo
+[2.210s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ros/ws/src/SEC-2027-StockCarRace/src/gazebo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo
+[2.212s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo -- -j16 -l16
+[2.340s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo -- -j16 -l16
+[2.341s] Invoking command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo
+[2.352s] -- Install configuration: ""
+[2.353s] -- Execute custom install script
+[2.359s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/launch/gazebo.launch.py
+[2.388s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/description/chassis.stl
+[2.415s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/description/robot.urdf.xacro
+[2.444s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/ament_index/resource_index/package_run_dependencies/gazebo
+[2.474s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/ament_index/resource_index/parent_prefix_path/gazebo
+[2.503s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/environment/ament_prefix_path.sh
+[2.535s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/environment/ament_prefix_path.dsv
+[2.565s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/environment/path.sh
+[2.591s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/environment/path.dsv
+[2.620s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/local_setup.bash
+[2.648s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/local_setup.sh
+[2.676s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/local_setup.zsh
+[2.711s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/local_setup.dsv
+[2.740s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/package.dsv
+[2.772s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/ament_index/resource_index/packages/gazebo
+[2.808s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/cmake/gazeboConfig.cmake
+[2.834s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/cmake/gazeboConfig-version.cmake
+[2.865s] -- Symlinking: /home/ros/ws/src/SEC-2027-StockCarRace/install/gazebo/share/gazebo/package.xml
+[2.929s] Invoked command in '/home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ros/ws/src/SEC-2027-StockCarRace/build/gazebo
