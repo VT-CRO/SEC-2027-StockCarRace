@@ -2,7 +2,7 @@ import time
 
 from arduino.app_utils import App
 
-print("Hello world!")
+print("Hello, world!")
 
 
 def loop():
