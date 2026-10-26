@@ -11,13 +11,10 @@ from launch.conditions import IfCondition
 from launch.actions import (
     DeclareLaunchArgument,
     ExecuteProcess,
-    IncludeLaunchDescription, 
+    IncludeLaunchDescription,
     LogInfo,
-    OpaqueFunction,
-    RegisterEventHandler,
     SetEnvironmentVariable,
 )
-from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
@@ -26,33 +23,6 @@ from launch.substitutions import (
     LaunchConfiguration,
 )
 from launch_ros.actions import Node
-
-
-def _register_bag_playback(context, *, spawn_robot):
-    bag_path = context.perform_substitution(LaunchConfiguration("replay_bag"))
-    if not bag_path:
-        return []
-
-    play_bag = ExecuteProcess(
-        cmd=[
-            "ros2",
-            "bag",
-            "play",
-            bag_path,
-            "--topics",
-            "/cmd_vel",
-        ],
-        output="screen",
-    )
-    return [
-        LogInfo(msg=f"Replaying /cmd_vel from {bag_path}"),
-        RegisterEventHandler(
-            OnProcessExit(
-                target_action=spawn_robot,
-                on_exit=[play_bag],
-            )
-        ),
-    ]
 
 
 def generate_launch_description():
@@ -151,27 +121,16 @@ def generate_launch_description():
             "/cmd_vel",
             "/odom",
         ],
-        condition=IfCondition(LaunchConfiguration("record_bag")),
+        condition=IfCondition(LaunchConfiguration("record")),
         output="screen",
     )
 
     return LaunchDescription(
         [
             DeclareLaunchArgument(
-                "record_bag",
+                "record",
                 default_value="true",
                 description="Record /cmd_vel and /odom to a rosbag",
-            ),
-            DeclareLaunchArgument(
-                "replay_bag",
-                default_value="",
-                description=(
-                    "Optional rosbag2 directory to replay after the robot spawns"
-                ),
-            ),
-            OpaqueFunction(
-                function=_register_bag_playback,
-                kwargs={"spawn_robot": spawn_robot},
             ),
             ignition_partition,
             gazebo_resource_path,
@@ -182,7 +141,7 @@ def generate_launch_description():
             LogInfo(msg=f"Using Ignition partition {ignition_partition_name}"),
             LogInfo(
                 msg=f"Recording /cmd_vel and /odom to {bag_path}",
-                condition=IfCondition(LaunchConfiguration("record_bag")),
+                condition=IfCondition(LaunchConfiguration("record")),
             ),
             record_bag,
         ]

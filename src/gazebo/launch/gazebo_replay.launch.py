@@ -8,62 +8,14 @@ from ament_index_python.packages import (
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    ExecuteProcess,
     IncludeLaunchDescription,
-    OpaqueFunction,
+    LogInfo,
+    RegisterEventHandler,
 )
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-
-
-def _include_gazebo_with_bag(context, *, package_share, workspace_root):
-    bag_path = context.perform_substitution(LaunchConfiguration("bag_path"))
-
-    if not bag_path:
-        bag_directories = glob(
-            os.path.join(workspace_root, "src", "rosbags", "cmd_vel_*")
-        )
-        bag_directories = [
-            path
-            for path in bag_directories
-            if os.path.isdir(path)
-            and os.path.isfile(os.path.join(path, "metadata.yaml"))
-        ]
-        if not bag_directories:
-            raise RuntimeError(
-                "No completed cmd_vel bag found under src/rosbags. "
-                "Record one with gazebo.launch.py or pass "
-                "bag_path:=<relative path>."
-            )
-        bag_path = os.path.relpath(
-            max(bag_directories, key=os.path.getmtime), workspace_root
-        )
-
-    if os.path.isabs(bag_path):
-        raise RuntimeError(
-            "bag_path must be relative to the SEC-2027-StockCarRace workspace."
-        )
-
-    resolved_bag_path = os.path.realpath(
-        os.path.join(workspace_root, bag_path)
-    )
-    if os.path.commonpath([workspace_root, resolved_bag_path]) != workspace_root:
-        raise RuntimeError("bag_path must resolve inside the workspace.")
-    if not os.path.isfile(os.path.join(resolved_bag_path, "metadata.yaml")):
-        raise RuntimeError(
-            f"No rosbag2 metadata.yaml found at workspace-relative path "
-            f"'{bag_path}'."
-        )
-
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(package_share, "launch", "gazebo.launch.py")
-        ),
-        launch_arguments={
-            "record_bag": "false",
-            "replay_bag": resolved_bag_path,
-        }.items(),
-    )
-    return [gazebo_launch]
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
 def generate_launch_description():
@@ -74,24 +26,72 @@ def generate_launch_description():
         if os.path.basename(package_prefix) == "gazebo"
         else package_prefix
     )
+
+    # Determine the path to rosbag to replay (defaults to most recent rosbag generated if path arg is not passed)
+
     workspace_root = os.path.dirname(install_directory)
+
+    bag_directories = [
+        path
+        for path in glob(
+            os.path.join(workspace_root, "src", "rosbags", "cmd_vel_*")
+        )
+        if os.path.isdir(path)
+        and os.path.isfile(os.path.join(path, "metadata.yaml"))
+    ]
+    if not bag_directories:
+        raise RuntimeError(
+            "No completed cmd_vel bag found under src/rosbags. "
+            "Record one with gazebo.launch.py or pass "
+            "path:=<workspace-relative path>."
+        )
+    latest_bag_path = os.path.relpath(
+        max(bag_directories, key=os.path.getmtime), workspace_root
+    )
+
+    gazebo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(package_share, "launch", "gazebo.launch.py")
+        ),
+        launch_arguments={"record": "false"}.items(),
+    )
+    wait_for_odom = ExecuteProcess(
+        cmd=["ros2", "topic", "echo", "/odom", "--once"],
+        output="log",
+    )
+    bag_path = PathJoinSubstitution(
+        [workspace_root, LaunchConfiguration("path")]
+    )
+    play_bag = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "bag",
+            "play",
+            bag_path,
+            "--topics",
+            "/cmd_vel",
+        ],
+        output="screen",
+    )
 
     return LaunchDescription(
         [
             DeclareLaunchArgument(
-                "bag_path",
-                default_value="",
+                "path",
+                default_value=latest_bag_path,
                 description=(
                     "Rosbag2 directory relative to the workspace root; "
                     "defaults to the newest completed cmd_vel bag in src/rosbags"
                 ),
             ),
-            OpaqueFunction(
-                function=_include_gazebo_with_bag,
-                kwargs={
-                    "package_share": package_share,
-                    "workspace_root": workspace_root,
-                },
+            LogInfo(msg=["Replaying /cmd_vel from ", bag_path]),
+            gazebo_launch,
+            RegisterEventHandler(
+                OnProcessExit(
+                    target_action=wait_for_odom,
+                    on_exit=[play_bag],
+                )
             ),
+            wait_for_odom,
         ]
     )

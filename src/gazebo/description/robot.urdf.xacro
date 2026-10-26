@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="four_wheel_robot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="prototype+robot">
   <!-- Dimensions are in metres. The chassis mass is a temporary placeholder. -->
   <xacro:property name="chassis_mass" value="1.0"/>
   <xacro:property name="wheel_radius" value="0.035"/>
