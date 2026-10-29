@@ -91,7 +91,7 @@ def generate_launch_description():
             "-topic",
             "robot_description",
             "-name",
-            "four_wheel_robot",
+            "robot",
             "-z",
             "0.0",
         ],

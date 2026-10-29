@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="prototype+robot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
   <!-- Dimensions are in metres. The chassis mass is a temporary placeholder. -->
   <xacro:property name="chassis_mass" value="1.0"/>
   <xacro:property name="wheel_radius" value="0.035"/>
@@ -133,7 +133,7 @@
     <plugin
       filename="libignition-gazebo-joint-state-publisher-system.so"
       name="ignition::gazebo::systems::JointStatePublisher">
-      <topic>/model/four_wheel_robot/joint_state</topic>
+      <topic>/model/robot/joint_state</topic>
     </plugin>
   </gazebo>
 </robot>

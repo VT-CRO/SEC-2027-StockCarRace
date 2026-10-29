@@ -49,6 +49,9 @@ def generate_launch_description():
         max(bag_directories, key=os.path.getmtime), workspace_root
     )
 
+
+    # Launches gazebo.launch.py, ros2 bag
+    
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(package_share, "launch", "gazebo.launch.py")
