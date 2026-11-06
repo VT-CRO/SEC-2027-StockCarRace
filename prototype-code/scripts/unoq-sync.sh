@@ -95,8 +95,17 @@ case "${1:-}" in
     read -rp "Apply these changes? [y/N] " ans
     [[ "$ans" =~ ^[Yy]$ ]] && rsync -avz "${EXCLUDES[@]}" -e "ssh ${SSH_OPTS[*]}" "$UNO_HOST:$REMOTE_APP" "$LOCAL_APP"
     ;;
+  stop)
+    APP_PATH="${REMOTE_APP%/}"
+    ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app stop '$APP_PATH'" || true
+    ;;
+  start)
+    APP_PATH="${REMOTE_APP%/}"
+    ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app stop '$APP_PATH'" || true
+    ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app start '$APP_PATH'" || true
+    ;;
   *)
-    echo "Usage: $0 {deploy|pull}"
+    echo "Usage: $0 {deploy|pull|stop|start}"
     echo "Board: $UNO_HOST  (override with UNO_IP / UNO_USER / REMOTE_APP)"
     exit 1
     ;;
