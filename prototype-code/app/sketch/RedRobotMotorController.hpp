@@ -2,7 +2,7 @@
 #define RED_ROBOT_MOTOR_CONTROLLER_H_
 
 #include "MotorController.hpp"
-#include <cstdint>
+#include <stdint.h>
 
 /*
  Motor controller implementation for the motors on the red prototype robot.

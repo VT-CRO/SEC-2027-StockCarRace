@@ -1,4 +1,7 @@
 #include "RedRobotMotorController.hpp"
+#include "Arduino.h"
+
+#include <stdint.h>
 
 RedRobotMotorController::RedRobotMotorController(uint8_t forwardHighPin,
                                                  uint8_t backwardHighPin,

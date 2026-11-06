@@ -1,5 +1,3 @@
-#include <cstdint>
-
 #include "TankDrivetrain.hpp"
 #include "RedRobotMotorController.hpp"
 #include "ultrasonic.hpp"

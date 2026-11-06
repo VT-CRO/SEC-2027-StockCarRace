@@ -1,4 +1,5 @@
 #include "ultrasonic.hpp"
+#include "Arduino.h"
 
 long readDistanceCm(uint8_t trigPin, uint8_t echoPin) {
   digitalWrite(trigPin, LOW);
