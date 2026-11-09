@@ -1,0 +1,29 @@
+#ifndef TEAM_ONE_MOTOR_CONTROLLER_H_
+#define TEAM_ONE_MOTOR_CONTROLLER_H_
+
+#include "MotorController.hpp"
+#include <Servo.h>
+
+// Controls one Repeat AM32 drive ESC using bidirectional RC servo pulses.
+// The Servo library repeats a pulse on the signal pin about every 20 ms.
+// The ESC reads how long the pin stays high: 1500 us is neutral, shorter
+// pulses command one direction, and longer pulses command the other.
+// With reversal disabled, runOpenLoop() maps -255..0..255 to
+// 1000..1500..2000 us. This commands throttle. Actual wheel speed depends on load.
+class TeamOneMotorController : public MotorController {
+public:
+  explicit TeamOneMotorController(uint8_t signalPin, bool reversed = false);
+
+  // Call from setup() and allow the ESC to arm at neutral before driving.
+  void begin();
+
+  void runOpenLoop(int velocity) override;
+
+  void stop() override;
+private:
+  const uint8_t signalPin;
+  const bool reversed;
+  Servo signal;
+};
+
+#endif

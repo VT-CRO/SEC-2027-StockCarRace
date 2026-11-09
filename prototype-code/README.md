@@ -94,3 +94,35 @@ To avoid conflicts, treat the repo on your laptop as the source of truth. Deploy
 | SSH asks "Are you sure you want to continue connecting?" | Normal for an IP you haven't connected to before. To verify it's really your board, compare the fingerprint with `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` on the board, then answer `yes`. |
 | `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED`        | The IP was reassigned to a different device (or your board). Confirm it's your board, then run `ssh-keygen -R <ip>`.                                                                                 |
 | `Permission denied`                                      | Wrong password. Check the `arduino` user's password on the board.                                                                                                                                    |
+
+## Repeat AM32 drive motors
+
+Use one [Repeat AM32 drive ESC](https://repeat-robotics.com/products/repeat-am32-drive-esc) per
+[Repeat Drive Pro motor](https://repeat-robotics.com/products/repeat-drive-pro). Connect each
+motor's three phase wires to its own ESC. Wire the left ESC signal to UNO Q **D9** and the right
+ESC signal to **D10**. Tie both ESC signal grounds to UNO Q GND. Power the ESCs from a battery
+within both the ESC and the installed motor variant's ratings, and power the UNO Q separately.
+The UNO Q signal is 3.3 V; keep battery voltage off its headers.
+
+The sketch expects bidirectional **RC servo input** (AM32 Auto or Servo, with bidirectional drive
+and normal immediate reverse). It sends pulses about every 20 ms using Arduino's `Servo` library
+and defaults to 1000 / 1500 / 2000 µs for reverse / neutral / forward before direction inversion.
+Leave the Repeat motor settings in place. If either ESC has been reconfigured, check its input
+mode and servo endpoints/neutral in the [AM32 configurator](https://github.com/am32-firmware/AM32#firmware-release--configuration-tool)
+before changing the pulse constants in `TeamOneMotorController.cpp`.
+
+The App Lab sketch profile declares `Servo` 1.3.0, which supports the UNO Q. If building in
+Arduino IDE, select **Arduino UNO Q**, install **Servo 1.3.0** in Library Manager, and open
+`app/sketch/sketch.ino`.
+
+1. Raise both wheels off the ground and start the sketch in its default `DriveMode::Idle`.
+   Confirm both ESCs arm and neither wheel moves. If checking the signal with a scope, look
+   for a 1500 µs high pulse about every 20 ms on both pins.
+2. Change `DRIVE_MODE` in `sketch.ino` to `DriveMode::BenchTest` and restart with the ESCs
+   powered. After three seconds at neutral, the sketch commands each wheel forward and reverse
+   at about one quarter throttle for 500 ms each, with a neutral pause between commands. It
+   then stays at neutral until restart. The test runs again on every restart in this mode.
+3. If a wheel labeled forward spins backward, flip that side's `*_ESC_REVERSED` flag and
+   repeat. Set `DRIVE_MODE` back to `Idle` after testing. `PrototypeCourse` opts into the old
+   timed driving and ultrasonic avoidance routine; its timings need to be tuned for the new
+   chassis. The controller commands throttle and has no wheel speed or distance feedback.

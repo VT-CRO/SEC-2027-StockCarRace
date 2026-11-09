@@ -1,18 +1,17 @@
+#include "BenchTest.hpp"
 #include "TankDrivetrain.hpp"
-#include "RedRobotMotorController.hpp"
+#include "TeamOneMotorController.hpp"
 #include "ultrasonic.hpp"
 
-// Drivetrain Pin Definitions
+// UNO Q header pins. Set each direction so a positive command moves the car forward.
+constexpr uint8_t LEFT_ESC_PIN = 9;
+constexpr uint8_t RIGHT_ESC_PIN = 10;
+constexpr bool LEFT_ESC_REVERSED = false;
+constexpr bool RIGHT_ESC_REVERSED = true; // Initial guess for mirrored mounting.
+constexpr unsigned long ESC_ARM_MS = 3000; // Allow time for ESC startup and arming.
 
-// TODO: Find pin values on real hardware
-constexpr uint8_t L_FORWARD_HIGH_PIN = 2;
-constexpr uint8_t L_BACKWARD_HIGH_PIN = 3;
-
-constexpr uint8_t R_FORWARD_HIGH_PIN = 4;
-constexpr uint8_t R_BACKWARD_HIGH_PIN = 5;
-
-constexpr uint8_t L_PWM = 9;
-constexpr uint8_t R_PWM = 10;
+enum class DriveMode { Idle, BenchTest, PrototypeCourse };
+constexpr DriveMode DRIVE_MODE = DriveMode::Idle;
 
 // Sensor Pin Definitions
 constexpr uint8_t ULTRASONIC_TRIG_PIN = 6;
@@ -20,30 +19,38 @@ constexpr uint8_t ULTRASONIC_ECHO_PIN = 7;
 constexpr long OBSTACLE_DISTANCE_CM = 30;
 constexpr unsigned long SENSOR_PERIOD_MS = 60;
 
-RedRobotMotorController leftMotor = RedRobotMotorController(L_FORWARD_HIGH_PIN, L_BACKWARD_HIGH_PIN, L_PWM);
-RedRobotMotorController rightMotor = RedRobotMotorController(R_FORWARD_HIGH_PIN, R_BACKWARD_HIGH_PIN, R_PWM);
-
-TankDrivetrain drivetrain = TankDrivetrain(leftMotor, rightMotor);
+TeamOneMotorController leftMotor(LEFT_ESC_PIN, LEFT_ESC_REVERSED);
+TeamOneMotorController rightMotor(RIGHT_ESC_PIN, RIGHT_ESC_REVERSED);
+TankDrivetrain drivetrain(leftMotor, rightMotor);
 
 void setup()
 {
     Serial.begin(9600);
     Serial.println();
     Serial.println("Starting...");
+    leftMotor.begin();
+    rightMotor.begin();
+
+    Serial.println("Holding ESCs at neutral for arming.");
+    // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
+    // The Servo library keeps sending neutral pulses during this wait.
+    delay(ESC_ARM_MS);
+
+    if (DRIVE_MODE == DriveMode::BenchTest) {
+        runBenchTest(drivetrain);
+    } else if (DRIVE_MODE == DriveMode::PrototypeCourse) {
+        pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);
+        pinMode(ULTRASONIC_ECHO_PIN, INPUT);
+        digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
+    }
 
     pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);
-    pinMode(ULTRASONIC_ECHO_PIN, INPUT);
-    digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
-
     for(int i = 0; i < 10; i++){
         digitalWrite(LED_BUILTIN, LOW);
         delay(200);
         digitalWrite(LED_BUILTIN, HIGH);
         delay(200);
     }
-
-    delay(2000);
 }
 
 /*
@@ -104,6 +111,11 @@ void driveAroundObstacle() {
 
 void loop()
 {
+    if (DRIVE_MODE != DriveMode::PrototypeCourse) {
+        delay(100);
+        return;
+    }
+
     Serial.println("Driving down straightaway");
     driveAndAvoidObstacles(255, 255, 3000);
 
