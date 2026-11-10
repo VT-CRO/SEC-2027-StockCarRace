@@ -24,7 +24,7 @@ public:
            static_cast<float>(countsPerRevolution());
   }
 
-  float degrees() const { return revolutions() * 360.0f; }
+  float angleDegrees() const { return revolutions() * 360.0f; }
 
   virtual ~RelativeEncoder() = default;
 };

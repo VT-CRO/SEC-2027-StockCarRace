@@ -1,7 +1,5 @@
 #include "ArduinoQuadratureEncoder.hpp"
 
-ArduinoQuadratureEncoder *ArduinoQuadratureEncoder::instance_ = nullptr;
-
 namespace {
 /*
 Each encoder edge produces a transition from a previous two-bit state
@@ -38,6 +36,10 @@ constexpr int8_t QUADRATURE_TRANSITIONS[16] = {
 };
 } // namespace
 
+ArduinoQuadratureEncoder *
+    ArduinoQuadratureEncoder::instances_[ArduinoQuadratureEncoder::MAX_ENCODERS] = {
+        nullptr, nullptr};
+
 ArduinoQuadratureEncoder::ArduinoQuadratureEncoder(uint8_t channelAPin,
                                                    uint8_t channelBPin,
                                                    int32_t countsPerRevolution,
@@ -46,19 +48,20 @@ ArduinoQuadratureEncoder::ArduinoQuadratureEncoder(uint8_t channelAPin,
       countsPerRevolution_(countsPerRevolution), reversed_(reversed) {}
 
 ArduinoQuadratureEncoder::~ArduinoQuadratureEncoder() {
-  if (instance_ == this) {
-    if (started_) {
-      detachInterrupt(digitalPinToInterrupt(channelAPin_));
-      detachInterrupt(digitalPinToInterrupt(channelBPin_));
-    }
-    instance_ = nullptr;
+  if (started_) {
+    detachInterrupt(channelAInterrupt_);
+    detachInterrupt(channelBInterrupt_);
+    instances_[instanceSlot_] = nullptr;
   }
 }
 
 bool ArduinoQuadratureEncoder::begin() {
+  const int channelAInterrupt = digitalPinToInterrupt(channelAPin_);
+  const int channelBInterrupt = digitalPinToInterrupt(channelBPin_);
+
   if (channelAPin_ == channelBPin_ || countsPerRevolution_ <= 0 ||
-      digitalPinToInterrupt(channelAPin_) < 0 ||
-      digitalPinToInterrupt(channelBPin_) < 0) {
+      channelAInterrupt < 0 || channelBInterrupt < 0 ||
+      channelAInterrupt == channelBInterrupt) {
     return false;
   }
 
@@ -66,20 +69,28 @@ bool ArduinoQuadratureEncoder::begin() {
     return true;
   }
 
-  if (instance_ != nullptr && instance_ != this) {
+  for (uint8_t slot = 0; slot < MAX_ENCODERS; ++slot) {
+    if (instances_[slot] == nullptr) {
+      instanceSlot_ = static_cast<int8_t>(slot);
+      break;
+    }
+  }
+
+  if (instanceSlot_ < 0) {
     return false;
   }
 
-  instance_ = this;
+  instances_[instanceSlot_] = this;
+  channelAInterrupt_ = static_cast<int8_t>(channelAInterrupt);
+  channelBInterrupt_ = static_cast<int8_t>(channelBInterrupt);
   pinMode(channelAPin_, INPUT);
   pinMode(channelBPin_, INPUT);
   previousState_ = (digitalRead(channelAPin_) << 1) | digitalRead(channelBPin_);
   reset();
 
-  attachInterrupt(digitalPinToInterrupt(channelAPin_),
-                  ArduinoQuadratureEncoder::interruptHandler, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(channelBPin_),
-                  ArduinoQuadratureEncoder::interruptHandler, CHANGE);
+  void (*handler)() = instanceSlot_ == 0 ? interrupt0 : interrupt1;
+  attachInterrupt(channelAInterrupt_, handler, CHANGE);
+  attachInterrupt(channelBInterrupt_, handler, CHANGE);
   started_ = true;
   return true;
 }
@@ -96,11 +107,21 @@ int32_t ArduinoQuadratureEncoder::countsPerRevolution() const {
   return countsPerRevolution_;
 }
 
-void ArduinoQuadratureEncoder::interruptHandler() {
-  if (instance_ != nullptr) {
-    instance_->handleInterrupt();
+void ArduinoQuadratureEncoder::dispatch(uint8_t interruptNumber) {
+  if (instances_[interruptNumber] != nullptr) {
+    instances_[interruptNumber]->handleInterrupt();
   }
 }
+
+#define DEFINE_INTERRUPT_HANDLER(number)                                      \
+  void ArduinoQuadratureEncoder::interrupt##number() {                        \
+    dispatch(number);                                                         \
+  }
+
+DEFINE_INTERRUPT_HANDLER(0)
+DEFINE_INTERRUPT_HANDLER(1)
+
+#undef DEFINE_INTERRUPT_HANDLER
 
 void ArduinoQuadratureEncoder::handleInterrupt() {
   const uint8_t currentState =
