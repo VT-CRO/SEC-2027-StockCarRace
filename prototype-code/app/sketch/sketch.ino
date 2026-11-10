@@ -59,7 +59,7 @@ This function is currently very naive. It:
     - If it sees an obstacle, it does a preplanned avoidance routine
     - If durationMs has elapsed, it stops
 */
-void driveAndAvoidObstacles(int leftVelocity, int rightVelocity,
+void driveAndAvoidObstacles(float leftVelocity, float rightVelocity,
                             unsigned long durationMs) {
     const unsigned long endTime = millis() + durationMs;
     unsigned long lastSensorRead = 0;
@@ -88,22 +88,22 @@ void driveAroundObstacle() {
     drivetrain.stop();
     delay(150);
 
-    drivetrain.runOpenLoop(-160, 160);
+    drivetrain.runOpenLoop(-0.5, 0.5);
     delay(500);
 
-    drivetrain.runOpenLoop(180, 180);
+    drivetrain.runOpenLoop(0.5, 0.5);
     delay(900);
 
-    drivetrain.runOpenLoop(160, -160);
+    drivetrain.runOpenLoop(0.5, -0.5);
     delay(500);
 
-    drivetrain.runOpenLoop(180, 180);
+    drivetrain.runOpenLoop(0.5, 0.5);
     delay(1800);
 
-    drivetrain.runOpenLoop(160, -160);
+    drivetrain.runOpenLoop(0.5, -0.5);
     delay(500);
 
-    drivetrain.runOpenLoop(180, 180);
+    drivetrain.runOpenLoop(0.5, 0.5);
     delay(900);
 
     drivetrain.stop();
@@ -117,10 +117,10 @@ void loop()
     }
 
     Serial.println("Driving down straightaway");
-    driveAndAvoidObstacles(255, 255, 3000);
+    driveAndAvoidObstacles(0.5, 0.5, 3000);
 
     Serial.println("Driving around corner");
-    driveAndAvoidObstacles(100, 255, 6000);
+    driveAndAvoidObstacles(0.25, 0.5, 6000);
 
     drivetrain.stop();
     Serial.println("Pausing");

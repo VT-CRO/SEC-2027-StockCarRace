@@ -23,7 +23,7 @@ public:
   RedRobotMotorController(uint8_t forwardHighPin, uint8_t backwardHighPin,
                           uint8_t speedPwmPin);
 
-  void runOpenLoop(int velocity) override;
+  void runOpenLoop(float velocity) override;
 
   void stop() override;
 

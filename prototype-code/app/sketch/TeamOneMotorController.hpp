@@ -8,8 +8,9 @@
 // The Servo library repeats a pulse on the signal pin about every 20 ms.
 // The ESC reads how long the pin stays high: 1500 us is neutral, shorter
 // pulses command one direction, and longer pulses command the other.
-// With reversal disabled, runOpenLoop() maps -255..0..255 to
-// 1000..1500..2000 us. This commands throttle. Actual wheel speed depends on load.
+// With reversal disabled, runOpenLoop() maps -1.0..0..1.0 to
+// 1000..1500..2000 us. This commands throttle. Actual wheel speed depends on
+// load.
 class TeamOneMotorController : public MotorController {
 public:
   explicit TeamOneMotorController(uint8_t signalPin, bool reversed = false);
@@ -17,9 +18,10 @@ public:
   // Call from setup() and allow the ESC to arm at neutral before driving.
   void begin();
 
-  void runOpenLoop(int velocity) override;
+  void runOpenLoop(float velocity) override;
 
   void stop() override;
+
 private:
   const uint8_t signalPin;
   const bool reversed;

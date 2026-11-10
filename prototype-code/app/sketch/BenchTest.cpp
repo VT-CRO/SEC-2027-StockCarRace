@@ -2,12 +2,12 @@
 #include <Arduino.h>
 
 namespace {
-constexpr int TEST_COMMAND = 64;
+constexpr float TEST_COMMAND = 0.25;
 constexpr unsigned long TEST_RUN_MS = 500;
 constexpr unsigned long NEUTRAL_PAUSE_MS = 1000;
 
 void testWheel(TankDrivetrain &drivetrain, const char *label,
-               int leftCommand, int rightCommand) {
+               float leftCommand, float rightCommand) {
   Serial.println(label);
   drivetrain.runOpenLoop(leftCommand, rightCommand);
   delay(TEST_RUN_MS);

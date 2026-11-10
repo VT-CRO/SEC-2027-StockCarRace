@@ -4,7 +4,7 @@ TankDrivetrain::TankDrivetrain(MotorController &leftMotor,
                                MotorController &rightMotor)
     : leftMotor(leftMotor), rightMotor(rightMotor) {};
 
-void TankDrivetrain::runOpenLoop(int leftVelocity, int rightVelocity) {
+void TankDrivetrain::runOpenLoop(float leftVelocity, float rightVelocity) {
   leftMotor.runOpenLoop(leftVelocity);
   rightMotor.runOpenLoop(rightVelocity);
 }

@@ -24,10 +24,10 @@ enum MotorDirection {
 class MotorController {
 public:
   /*
-   * runOpenLoop runs the motor at a given velocity, from -255 (full speed
-   * backward) to 255 (full speed forward).
+   * runOpenLoop runs the motor at a given velocity, from -1.0 (full speed
+   * backward) to 1.0 (full speed forward).
    */
-  virtual void runOpenLoop(int velocity) = 0;
+  virtual void runOpenLoop(float velocity) = 0;
 
   /*
    * Stops the motors. This may behave differently than runOpenLoop and is

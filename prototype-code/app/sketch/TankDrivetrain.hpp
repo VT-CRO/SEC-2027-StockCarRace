@@ -20,12 +20,12 @@ public:
 
   /*
    * @brief Drive the motors at certain speeds
-   * @param leftVelocity the velocity at which to run the left motor, from -255
-   * (full speed backward) to 255 (full speed forward)
+   * @param leftVelocity the velocity at which to run the left motor, from -1.0
+   * (full speed backward) to 1.0 (full speed forward)
    * @param rightVelocity the velocity at which to run the right motor, from
-   * -255 (full speed backward) to 255 (full speed forward)
+   * -1.0 (full speed backward) to 1.0 (full speed forward)
    */
-  void runOpenLoop(int leftVelocity, int rightVelocity);
+  void runOpenLoop(float leftVelocity, float rightVelocity);
 
   /*
    * @brief Stop both drive motors.

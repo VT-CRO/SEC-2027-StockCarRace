@@ -13,17 +13,17 @@ RedRobotMotorController::RedRobotMotorController(uint8_t forwardHighPin,
   pinMode(speedPwmPin, OUTPUT);
 }
 
-void RedRobotMotorController::runOpenLoop(int velocity) {
+void RedRobotMotorController::runOpenLoop(float velocity) {
   // Assume forward
   uint8_t highPin = forwardHighPin;
   uint8_t lowPin = backwardHighPin;
   // If we're actually going backward, switch the pins
-  if (velocity < 0) {
+  if (velocity < 0.0f) {
     highPin = backwardHighPin;
     lowPin = forwardHighPin;
   }
 
-  unsigned int speedPwmValue = abs(velocity);
+  unsigned int speedPwmValue = abs((int)(velocity * 255.0f));
   if (speedPwmValue > 255) {
     speedPwmValue = 255;
   }
