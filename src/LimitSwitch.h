@@ -2,8 +2,8 @@
 #define LIMITSWITCH_H_
 
 #include "Arduino.h"
-#include <avr/io.h>
-#include <avr/pgmspace.h>
+// #include <avr/io.h>
+// #include <avr/pgmspace.h>
 
 class LimitSwitch {
   

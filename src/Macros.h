@@ -4,14 +4,14 @@
 // PCB Micros
 
 // Motor Drivers
-#define MD1_M1_PIN_1 23
-#define MD1_M1_PIN_2 21
+#define MD1_M1_PIN_1 11
+#define MD1_M1_PIN_2 10
 
-#define MD1_M2_PIN_1 20
-#define MD1_M2_PIN_2 19
+#define MD1_M2_PIN_1 6
+#define MD1_M2_PIN_2 5
 
-#define PWM_A        22
-#define PWM_B        18
+#define PWM_A        9
+#define PWM_B        3
 
 // UART/I2C
 #define UART1_RX 16

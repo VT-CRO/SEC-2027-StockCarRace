@@ -4,6 +4,11 @@
 #include "Macros.h"
 #include "ServoPositions.h"
 #include <Servo.h>
+#include <Wire.h>
+#include <VL53L0X.h>
+#include <Arduino_RouterBridge.h>
+
+VL53L0X tof; // TOF sensor
 
 // Drivetrain Macros
 
@@ -25,11 +30,25 @@ DriveTrain Robot(L, R);
 
 void setup() {
 
-  Serial.begin(9600);
+  Monitor.begin();
 
-  Serial.println();
-  Serial.println("Start");
+  Monitor.println();
+  Monitor.println("Start");
 
+  Wire.begin(); // SDA: 18/A4 SCL: 19/A5
+
+  tof.setTimeout(500);
+  if (!tof.init())
+  {
+    while (1) {
+       Monitor.println("Failed to detect and initialize sensor!");
+      delay(1000);
+    }
+  }
+
+  tof.startContinuous();
+
+  
   pinMode(LED_BUILTIN, OUTPUT);
   for(int i = 0; i < 10; i++){
     digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
@@ -38,17 +57,31 @@ void setup() {
     delay(200);                      // wait for a second
   }
 
+
+  Monitor.println("Waiting for start signal (Send any char)...");
+  while (!Monitor.available()) {};
+
+  Monitor.println("Starting...");
+
   delay(2000);
 
+  R.Motor_start(255);
+  L.Motor_start(255);
+  
 }
 
 void loop() {
+  double dis = tof.readRangeContinuousMillimeters() * 0.1;
 
-  Robot.Forward(255, 5000);
-  Robot.stop();
-  delay(1000);
-  Robot.Right(255, 0.5, 2000);
-  delay(10000);
-  Serial.println("hi");
 
+  Monitor.print("Distance: ");
+  Monitor.println(dis);
+  if (dis < 10){
+         
+      delay(100);
+      R.Motor_start(255);
+      L.Motor_start(255);
+  }
+
+  delay(20);
 }
