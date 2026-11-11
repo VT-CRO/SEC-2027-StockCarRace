@@ -1,8 +1,9 @@
-#include "BenchTest.hpp"
 #include "ArduinoQuadratureEncoder.hpp"
+#include "BenchTest.hpp"
 #include "TankDrivetrain.hpp"
 #include "TeamOneMotorController.hpp"
 #include "ultrasonic.hpp"
+#include <math.h>
 
 // UNO Q header pins. Set each direction so a positive command moves the car
 // forward.
@@ -15,7 +16,7 @@ constexpr unsigned long ESC_ARM_MS =
     3000; // Allow time for ESC startup and arming.
 
 enum class DriveMode { Idle, BenchTest, PrototypeCourse };
-constexpr DriveMode DRIVE_MODE = DriveMode::Idle;
+constexpr DriveMode DRIVE_MODE = DriveMode::BenchTest;
 
 // Sensor Pin Definitions
 constexpr uint8_t ULTRASONIC_TRIG_PIN = 6;
@@ -34,26 +35,28 @@ constexpr uint8_t RIGHT_ENCODER_B_PIN = 5;
 TeamOneMotorController leftMotor(LEFT_ESC_PIN, LEFT_ESC_REVERSED);
 TeamOneMotorController rightMotor(RIGHT_ESC_PIN, RIGHT_ESC_REVERSED);
 TankDrivetrain drivetrain(leftMotor, rightMotor);
-ArduinoQuadratureEncoder leftEncoder(
-    LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN, ENCODER_COUNTS_PER_REV);
-ArduinoQuadratureEncoder rightEncoder(
-    RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN, ENCODER_COUNTS_PER_REV);
+ArduinoQuadratureEncoder leftEncoder(LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN,
+                                     ENCODER_COUNTS_PER_REV);
+ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
+                                      ENCODER_COUNTS_PER_REV);
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println();
-  Serial.println("Starting...");
+  Bridge.begin();
+  Monitor.begin(115200);
+  Monitor.println();
+  Monitor.println("Starting...");
+  return;
   leftMotor.begin();
   rightMotor.begin();
 
   if (!leftEncoder.begin() || !rightEncoder.begin()) {
-    Serial.println("Failed to initialize wheel encoders.");
+    Monitor.println("Failed to initialize wheel encoders.");
     while (true) {
       delay(1000);
     }
   }
 
-  Serial.println("Holding ESCs at neutral for arming.");
+  Monitor.println("Holding ESCs at neutral for arming.");
   // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
   // The Servo library keeps sending neutral pulses during this wait.
   delay(ESC_ARM_MS);
@@ -138,13 +141,13 @@ void loop() {
     return;
   }
 
-  Serial.println("Driving down straightaway");
+  Monitor.println("Driving down straightaway");
   driveAndAvoidObstacles(0.5, 0.5, 3000);
 
-  Serial.println("Driving around corner");
+  Monitor.println("Driving around corner");
   driveAndAvoidObstacles(0.25, 0.5, 6000);
 
   drivetrain.stop();
-  Serial.println("Pausing");
+  Monitor.println("Pausing");
   delay(1000);
 }

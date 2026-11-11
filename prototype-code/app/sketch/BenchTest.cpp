@@ -1,5 +1,6 @@
 #include "BenchTest.hpp"
 #include <Arduino.h>
+#include <Arduino_RouterBridge.h>
 
 namespace {
 constexpr float TEST_COMMAND = 0.25;
@@ -8,7 +9,7 @@ constexpr unsigned long NEUTRAL_PAUSE_MS = 1000;
 
 void testWheel(TankDrivetrain &drivetrain, const char *label, float leftCommand,
                float rightCommand) {
-  Serial.println(label);
+  Monitor.println(label);
   drivetrain.runOpenLoop(leftCommand, rightCommand);
   delay(TEST_RUN_MS);
   drivetrain.stop();
@@ -21,12 +22,12 @@ void runBenchTest(TankDrivetrain &drivetrain) {
   testWheel(drivetrain, "Left reverse", -TEST_COMMAND, 0);
   testWheel(drivetrain, "Right forward", 0, TEST_COMMAND);
   testWheel(drivetrain, "Right reverse", 0, -TEST_COMMAND);
-  Serial.println("Bench test complete; holding neutral.");
+  Monitor.println("Bench test complete; holding neutral.");
 }
 
 void testEncoder(RelativeEncoder &encoder) {
-  Serial.print("Encoder position: ");
-  Serial.print(encoder.angleDegrees());
-  Serial.println(" degrees");
+  Monitor.print("Encoder position: ");
+  Monitor.print(encoder.angleDegrees());
+  Monitor.println(" degrees");
   delay(1000);
 }

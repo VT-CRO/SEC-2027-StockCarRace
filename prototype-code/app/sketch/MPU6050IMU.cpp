@@ -1,6 +1,7 @@
 #include "MPU6050IMU.hpp"
 #include "wrapAngle.hpp"
 #include <Arduino.h>
+#include <Arduino_RouterBridge.h>
 #include <Wire.h>
 #include <cmath>
 #include <math.h>
@@ -33,9 +34,9 @@ bool MPU6050IMU::begin() {
   // Make sure to mark that we've never read heading
   last_read = 0;
 
-  Serial.print("[MPU6050 ");
-  Serial.print(mpu_i2c_id, HEX);
-  Serial.println("] Initialized Successfully.");
+  Monitor.print("[MPU6050 ");
+  Monitor.print(mpu_i2c_id, HEX);
+  Monitor.println("] Initialized Successfully.");
 
   return true;
 }
@@ -67,11 +68,11 @@ bool MPU6050IMU::calibrate() {
   last_read = 0;
   headingRads = 0.0f;
 
-  Serial.print("[MPU6050 ");
-  Serial.print(mpu_i2c_id, HEX);
-  Serial.print("] Calibrated with bias: ");
-  Serial.print(bias);
-  Serial.println(" rad/s average.");
+  Monitor.print("[MPU6050 ");
+  Monitor.print(mpu_i2c_id, HEX);
+  Monitor.print("] Calibrated with bias: ");
+  Monitor.print(bias);
+  Monitor.println(" rad/s average.");
 
   return true;
 }
@@ -113,10 +114,10 @@ void MPU6050IMU::resetHeading(float newHeading) {
 }
 
 void MPU6050IMU::print_error(const char *message) {
-  Serial.print("[MPU6050 ");
-  Serial.print(mpu_i2c_id, HEX);
-  Serial.print("] ERROR: ");
-  Serial.println(message);
+  Monitor.print("[MPU6050 ");
+  Monitor.print(mpu_i2c_id, HEX);
+  Monitor.print("] ERROR: ");
+  Monitor.println(message);
 }
 
 void MPU6050IMU::writeRegister(uint8_t reg, uint8_t value) {

@@ -9,6 +9,8 @@ LOCAL_APP="$REPO_ROOT/prototype-code/app/"
 UNO_USER="${UNO_USER:-arduino}"
 REMOTE_APP="${REMOTE_APP:-/home/arduino/ArduinoApps/SEC-StockCarRace-Parallel-1/}"
 
+APP_NAME="user:SEC-StockCarRace-Parallel-1"
+
 is_ipv4() {
   [[ "$1" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || return 1
   local IFS=. octet
@@ -87,7 +89,7 @@ SSH_OPTS=(-o ControlMaster=auto -o ControlPath=/tmp/unoq-ssh-%C -o ControlPersis
 case "${1:-}" in
   deploy)
     APP_PATH="${REMOTE_APP%/}"
-    ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app stop '$APP_PATH'" || true
+    ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app stop '$APP_NAME'" || true
     rsync -avz --delete "${EXCLUDES[@]}" -e "ssh ${SSH_OPTS[*]}" "$LOCAL_APP" "$UNO_HOST:$REMOTE_APP"
     ;;
   pull)
