@@ -65,22 +65,37 @@ void setup() {
 
   delay(2000);
 
-  R.Motor_start(255);
-  L.Motor_start(255);
+  Robot.set_motor_states(1, 1);
   
 }
 
 void loop() {
-  double dis = tof.readRangeContinuousMillimeters() * 0.1;
+  double dis = tof.readRangeContinuousMillimeters() * 0.1; // converted to cm
 
 
   Monitor.print("Distance: ");
   Monitor.println(dis);
   if (dis < 10){
-         
+      Monitor.println("Detected!");
+      Robot.stop();
+
+      // Drives around the obstacle
+      Robot.set_motor_states(-1,1);
+      delay(500);
+      Robot.set_motor_states(1,1);
+      delay(500);
+      Robot.set_motor_states(1, -1);
+      delay(500);
+      Robot.set_motor_states(1,1);
+      delay(600);
+      Robot.set_motor_states(1,-1);
+      delay(300);
+      Robot.set_motor_states(1,1);
+      delay(500);
+      Robot.set_motor_states(-1, 1);
+
       delay(100);
-      R.Motor_start(255);
-      L.Motor_start(255);
+      Robot.set_motor_states(1, 1);
   }
 
   delay(20);

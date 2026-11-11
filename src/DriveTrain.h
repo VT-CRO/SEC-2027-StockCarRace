@@ -13,12 +13,13 @@ DriveTrain(int L_1, int L_2, int L_3, int R_1, int R_2, int R_3);
 
 void stop();
 
-void Forward(int speed, int time);
-void Backward(int speed, int time);
-void Right(int speed, double stepdown, int time);
-void Left(int speed, double stepdown, int time);
-void Clockwise(int speed, int time);
-void Counterclockwise(int speed, int time);
+// void Forward(int speed, int time);
+// void Backward(int speed, int time);
+// void Right(int speed, double stepdown, int time);
+// void Left(int speed, double stepdown, int time);
+// void Clockwise(int speed, int time);
+// void Counterclockwise(int speed, int time);
+void set_motor_states(float left, float right);
 
 void TestMotor(MotorControl test, int speed, int time);
 void TestMotors(int speed, int time);

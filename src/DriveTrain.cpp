@@ -7,9 +7,7 @@
 #define timeToDistX 700
 #define timeToDeg 2200/90
 
-DriveTrain::DriveTrain(){
-
-}
+DriveTrain::DriveTrain(){}
 
 DriveTrain::DriveTrain(MotorControl L, MotorControl R){
   M_Left = L;
@@ -17,10 +15,8 @@ DriveTrain::DriveTrain(MotorControl L, MotorControl R){
 }
 
 DriveTrain::DriveTrain(int L_1, int L_2, int L_3, int R_1, int R_2, int R_3){
-
   M_Left = MotorControl(L_1, L_2, L_3);
   M_Right = MotorControl(R_1, R_2, R_3);
-
 }
 
 void DriveTrain::stop(){
@@ -28,52 +24,9 @@ void DriveTrain::stop(){
   M_Left.Motor_start(0);
 }
 
-void DriveTrain::Forward(int speed, int time){
-  M_Right.Motor_start(speed);
-  M_Left.Motor_start(speed);
-
-  delay(time);
-  stop();
-}
-
-void DriveTrain::Backward(int speed, int time){
-  M_Right.Motor_start(-speed);
-  M_Left.Motor_start(-speed);
-
-  delay(time);
-  stop();
-}
-
-void DriveTrain::Right(int speed, double stepdown, int time){
-  M_Right.Motor_start(speed * stepdown);
-  M_Left.Motor_start(speed);
-
-  delay(time);
-  stop();
-}
-
-void DriveTrain::Left(int speed, double stepdown, int time){
-  M_Right.Motor_start(speed);
-  M_Left.Motor_start(speed * stepdown);
-
-  delay(time);
-  stop();
-}
-
-void DriveTrain::Clockwise(int speed, int time){
-  M_Right.Motor_start(-speed);
-  M_Left.Motor_start(speed);
-
-  delay(time);
-  stop();
-}
-
-void DriveTrain::Counterclockwise(int speed, int time){
-  M_Right.Motor_start(speed);
-  M_Left.Motor_start(-speed);
-
-  delay(time);
-  stop();
+void DriveTrain::set_motor_states(float left, float right){
+  M_Left.Motor_start((int)(left * 255));
+  M_Right.Motor_start((int)(right * 255));
 }
 
 void DriveTrain::TestMotor(MotorControl test, int speed, int time){
