@@ -3,12 +3,13 @@
 #include "TankDrivetrain.hpp"
 #include "TeamOneMotorController.hpp"
 #include "ultrasonic.hpp"
+#include <Arduino_RouterBridge.h>
 #include <math.h>
 
 // UNO Q header pins. Set each direction so a positive command moves the car
 // forward.
-constexpr uint8_t LEFT_ESC_PIN = 9;
-constexpr uint8_t RIGHT_ESC_PIN = 10;
+constexpr uint8_t LEFT_ESC_PIN = 8;
+constexpr uint8_t RIGHT_ESC_PIN = 11;
 constexpr bool LEFT_ESC_REVERSED = false;
 constexpr bool RIGHT_ESC_REVERSED =
     true; // Initial guess for mirrored mounting.
@@ -40,23 +41,32 @@ ArduinoQuadratureEncoder leftEncoder(LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN,
 ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
                                       ENCODER_COUNTS_PER_REV);
 
+void waitForPythonReady() {
+  bool ready = false;
+  while (!ready) {
+    // Poll python is_ready until it's registered
+    if (!Bridge.call("is_ready").result(ready)) {
+      ready = false;
+      delay(250); // Avoid flooding the bus with spam
+    }
+  }
+}
+
 void setup() {
   Bridge.begin();
-  Monitor.begin(115200);
-  Monitor.println();
-  Monitor.println("Starting...");
-  return;
+  waitForPythonReady();
+  Bridge.notify("logln", "Starting...");
   leftMotor.begin();
   rightMotor.begin();
 
   if (!leftEncoder.begin() || !rightEncoder.begin()) {
-    Monitor.println("Failed to initialize wheel encoders.");
-    while (true) {
-      delay(1000);
-    }
+    Bridge.notify("logln", "Failed to initialize wheel encoders.");
+    // while (true) {
+    //   delay(1000);
+    // }
   }
 
-  Monitor.println("Holding ESCs at neutral for arming.");
+  Bridge.notify("logln", "Holding ESCs at neutral for arming.");
   // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
   // The Servo library keeps sending neutral pulses during this wait.
   delay(ESC_ARM_MS);
@@ -64,9 +74,9 @@ void setup() {
   if (DRIVE_MODE == DriveMode::BenchTest) {
     runBenchTest(drivetrain);
   } else if (DRIVE_MODE == DriveMode::PrototypeCourse) {
-    pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);
-    pinMode(ULTRASONIC_ECHO_PIN, INPUT);
-    digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
+    // pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);
+    // pinMode(ULTRASONIC_ECHO_PIN, INPUT);
+    // digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
   }
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -141,13 +151,17 @@ void loop() {
     return;
   }
 
-  Monitor.println("Driving down straightaway");
-  driveAndAvoidObstacles(0.5, 0.5, 3000);
+  Bridge.notify("logln", "Driving down straightaway");
+  //   driveAndAvoidObstacles(0.5, 0.5, 3000);
+  drivetrain.runOpenLoop(0.5, 0.5);
+  delay(3000);
 
-  Monitor.println("Driving around corner");
-  driveAndAvoidObstacles(0.25, 0.5, 6000);
+  Bridge.notify("logln", "Driving around corner");
+  //   driveAndAvoidObstacles(0.25, 0.5, 6000);
+  drivetrain.runOpenLoop(0.25, 0.5);
+  delay(6000);
 
   drivetrain.stop();
-  Monitor.println("Pausing");
+  Bridge.notify("logln", "Pausing");
   delay(1000);
 }

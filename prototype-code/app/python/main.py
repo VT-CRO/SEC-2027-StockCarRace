@@ -1,9 +1,15 @@
 import time
 
-from arduino.app_utils import App
+from arduino.app_utils import App, Bridge
+
+
+def is_ready() -> bool:
+    return True
 
 print("Hello, world!")
-
+Bridge.provide("logln", lambda msg: print("MCU Log:", msg, flush=True))
+Bridge.provide("log", lambda msg: print("MCU Log:", msg, end="", flush=True))
+Bridge.provide("is_ready", is_ready)
 
 def loop():
     """This function is called repeatedly by the App framework."""

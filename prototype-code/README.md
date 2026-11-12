@@ -17,7 +17,10 @@ You work on the code on your laptop and push it to the Uno Q over SSH. **The rep
    ```bash
    sudo apt install rsync openssh-client
    ```
-2. **Uno Q:** complete the normal first-time setup in Arduino App Lab, connect the board to Wi-Fi, and make sure SSH is enabled.
+2. **Uno Q:** complete the normal first-time setup in Arduino App Lab, connect the board to Wi-Fi, make sure SSH is enabled, and install `rsync` in an App Lab terminal:
+   ```bash
+   sudo apt update && sudo apt install -y rsync
+   ```
 3. **First run only:** make the script executable if it isn't already:
    ```bash
    chmod +x prototype-code/scripts/unoq-sync.sh
@@ -92,6 +95,7 @@ To avoid conflicts, treat the repo on your laptop as the source of truth. Deploy
 | Script says the IP isn't reachable                       | Wrong interface (use `wlan0`), different network, or SSH isn't enabled on the board.                                                                                                                 |
 | IP looks right but still unreachable on guest Wi-Fi      | Guest networks often block devices from talking to each other. Try a phone hotspot that both your laptop and the board join.                                                                         |
 | SSH asks "Are you sure you want to continue connecting?" | Normal for an IP you haven't connected to before. To verify it's really your board, compare the fingerprint with `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` on the board, then answer `yes`. |
+| `rsync: connection unexpectedly closed` or `bash: line 1: rsync: command not found` | `rsync` is missing on the Uno Q. In an App Lab terminal on the board, run `sudo apt update && sudo apt install -y rsync`, then retry. |
 | `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED`        | The IP was reassigned to a different device (or your board). Confirm it's your board, then run `ssh-keygen -R <ip>`.                                                                                 |
 | `Permission denied`                                      | Wrong password. Check the `arduino` user's password on the board.                                                                                                                                    |
 

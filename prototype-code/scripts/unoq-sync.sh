@@ -86,13 +86,31 @@ UNO_HOST="$UNO_USER@$UNO_IP"
 EXCLUDES=(--exclude '.git' --exclude '__pycache__' --exclude '.venv' --exclude '.cache')
 SSH_OPTS=(-o ControlMaster=auto -o ControlPath=/tmp/unoq-ssh-%C -o ControlPersist=60)
 
+require_rsync() {
+  if ! command -v rsync >/dev/null 2>&1; then
+    echo "Error: rsync is not installed on this computer." >&2
+    echo "Install it with: sudo apt install rsync" >&2
+    exit 1
+  fi
+
+  if ! ssh "${SSH_OPTS[@]}" "$UNO_HOST" "command -v rsync >/dev/null 2>&1"; then
+    echo "Error: rsync is not installed on the Uno Q ($UNO_HOST)." >&2
+    echo "On the Uno Q, run:" >&2
+    echo "  sudo apt update && sudo apt install -y rsync" >&2
+    echo "Then run this command again." >&2
+    exit 1
+  fi
+}
+
 case "${1:-}" in
   deploy)
+    require_rsync
     APP_PATH="${REMOTE_APP%/}"
     ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app stop '$APP_NAME'" || true
     rsync -avz --delete "${EXCLUDES[@]}" -e "ssh ${SSH_OPTS[*]}" "$LOCAL_APP" "$UNO_HOST:$REMOTE_APP"
     ;;
   pull)
+    require_rsync
     rsync -avzn "${EXCLUDES[@]}" -e "ssh ${SSH_OPTS[*]}" "$UNO_HOST:$REMOTE_APP" "$LOCAL_APP"
     read -rp "Apply these changes? [y/N] " ans
     [[ "$ans" =~ ^[Yy]$ ]] && rsync -avz "${EXCLUDES[@]}" -e "ssh ${SSH_OPTS[*]}" "$UNO_HOST:$REMOTE_APP" "$LOCAL_APP"
