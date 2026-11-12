@@ -1,0 +1,108 @@
+#include "ArduinoQuadratureEncoder.hpp"
+#include <Arduino_RouterBridge.h>
+#include <Servo.h>
+
+Servo escA; // pin 11 -> right wheel
+Servo escB; // pin 9  -> left wheel
+
+ArduinoQuadratureEncoder leftEncoder(4, 5, 8192);
+ArduinoQuadratureEncoder rightEncoder(7, 6, 8192, true);
+
+const int PIN_A = 11;
+const int PIN_B = 9;
+const int NEUTRAL = 1500;
+const int NEUTRAL_A = 1488; // pin 11 ESC, trim from the ~25 µs shift
+const int NEUTRAL_B = 1480; // pin 9 ESC, trim from the ~40 µs shift
+const int MAX_OFFSET = 250;
+const int START_OFFSET = 60;
+const int STEP = 10;
+const int SETTLE_MS = 1000;
+const int MEASURE_MS = 1000;
+const int SAMPLE_MS = 5;
+
+int clampUs(int us, int neutral) {
+  return constrain(us, neutral - MAX_OFFSET, neutral + MAX_OFFSET);
+}
+
+void setBoth(int a, int b) {
+  escA.writeMicroseconds(clampUs(a, NEUTRAL_A));
+  escB.writeMicroseconds(clampUs(b, NEUTRAL_B));
+}
+
+void ramp(bool runA, bool runB, int dir) {
+  for (int off = START_OFFSET; off <= MAX_OFFSET; off += STEP) {
+    int us_a = NEUTRAL_A + dir * off;
+    int us_b = NEUTRAL_B + dir * off;
+    setBoth(runA ? us_a : NEUTRAL_A, runB ? us_b : NEUTRAL_B);
+    delay(SETTLE_MS);
+
+    float prevL = leftEncoder.angleDegrees();
+    float prevR = rightEncoder.angleDegrees();
+    float totL = 0;
+    float totR = 0;
+    unsigned long t0 = millis();
+    while (millis() - t0 < MEASURE_MS) {
+      delay(SAMPLE_MS);
+      float nowL = leftEncoder.angleDegrees();
+      float nowR = rightEncoder.angleDegrees();
+      float dL = nowL - prevL;
+      float dR = nowR - prevR;
+      if (dL > 180.0f)
+        dL -= 360.0f;
+      if (dL <= -180.0f)
+        dL += 360.0f;
+      if (dR > 180.0f)
+        dR -= 360.0f;
+      if (dR <= -180.0f)
+        dR += 360.0f;
+      totL += dL;
+      totR += dR;
+      prevL = nowL;
+      prevR = nowR;
+    }
+    float secs = (millis() - t0) / 1000.0f;
+
+    Monitor.print(runA ? "A" : "-");
+    Monitor.print(runB ? "B" : "-");
+    Monitor.print(",");
+    Monitor.print(dir > 0 ? "plus" : "minus");
+    Monitor.print(",");
+    Monitor.print(off);
+    Monitor.print(",");
+    Monitor.print(us_a);
+    Monitor.print(",");
+    Monitor.print(us_b);
+    Monitor.print(",");
+    Monitor.print(totL / secs); // left wheel deg/s
+    Monitor.print(",");
+    Monitor.println(totR / secs); // right wheel deg/s
+  }
+  setBoth(NEUTRAL_A, NEUTRAL_B);
+  Monitor.println("Neutral");
+  delay(3000);
+}
+
+void setup() {
+  Monitor.begin(115200);
+  escA.attach(PIN_A, 1000, 2000);
+  escB.attach(PIN_B, 1000, 2000);
+  setBoth(NEUTRAL, NEUTRAL);
+  leftEncoder.begin();
+  rightEncoder.begin();
+  Monitor.println("Neutral. Power the ESCs now.");
+  for (int i = 0; i < 15; i++) {
+    Monitor.println(i);
+    delay(1000);
+  }
+  Monitor.println(
+      "esc,pulse_dir,offset_us,pulse_us_a,pulse_us_b,left_deg_s,right_deg_s");
+}
+
+void loop() {
+  ramp(true, false, +1); // ESC A (right wheel)
+  ramp(true, false, -1);
+  ramp(false, true, +1); // ESC B (left wheel)
+  ramp(false, true, -1);
+  Monitor.println("Cycle done. Repeating in 10 s.");
+  delay(10000);
+}

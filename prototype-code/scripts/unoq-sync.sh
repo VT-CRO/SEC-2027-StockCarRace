@@ -124,6 +124,10 @@ case "${1:-}" in
     ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app stop '$APP_PATH'" || true
     ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app start '$APP_PATH'" || true
     ;;
+  restart)
+    APP_PATH="${REMOTE_APP%/}"
+    ssh "${SSH_OPTS[@]}" "$UNO_HOST" "arduino-app-cli app restart '$APP_PATH'" || true
+    ;;
   *)
     echo "Usage: $0 {deploy|pull|stop|start}"
     echo "Board: $UNO_HOST  (override with UNO_IP / UNO_USER / REMOTE_APP)"

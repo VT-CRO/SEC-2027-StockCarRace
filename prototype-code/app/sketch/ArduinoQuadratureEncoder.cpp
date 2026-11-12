@@ -36,9 +36,8 @@ constexpr int8_t QUADRATURE_TRANSITIONS[16] = {
 };
 } // namespace
 
-ArduinoQuadratureEncoder *
-    ArduinoQuadratureEncoder::instances_[ArduinoQuadratureEncoder::MAX_ENCODERS] = {
-        nullptr, nullptr};
+ArduinoQuadratureEncoder *ArduinoQuadratureEncoder::instances_
+    [ArduinoQuadratureEncoder::MAX_ENCODERS] = {nullptr, nullptr};
 
 ArduinoQuadratureEncoder::ArduinoQuadratureEncoder(uint8_t channelAPin,
                                                    uint8_t channelBPin,
@@ -113,10 +112,8 @@ void ArduinoQuadratureEncoder::dispatch(uint8_t interruptNumber) {
   }
 }
 
-#define DEFINE_INTERRUPT_HANDLER(number)                                      \
-  void ArduinoQuadratureEncoder::interrupt##number() {                        \
-    dispatch(number);                                                         \
-  }
+#define DEFINE_INTERRUPT_HANDLER(number)                                       \
+  void ArduinoQuadratureEncoder::interrupt##number() { dispatch(number); }
 
 DEFINE_INTERRUPT_HANDLER(0)
 DEFINE_INTERRUPT_HANDLER(1)

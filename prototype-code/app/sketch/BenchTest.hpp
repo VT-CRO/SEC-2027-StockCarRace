@@ -8,8 +8,8 @@
 void runBenchTest(TankDrivetrain &drivetrain);
 
 // Run in loop after calling begin in init to test encoder:
-// Reads the encoder value and waits one second
+// Reads the encoder values and waits 1/10 of a second
 // Make sure to disable motor code and then turn the encoder by hand to test.
-void testEncoder(RelativeEncoder &encoder);
+void testEncoders(RelativeEncoder &encoder1, RelativeEncoder &encoder2);
 
 #endif

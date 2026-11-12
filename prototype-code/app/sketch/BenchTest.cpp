@@ -25,9 +25,11 @@ void runBenchTest(TankDrivetrain &drivetrain) {
   Monitor.println("Bench test complete; holding neutral.");
 }
 
-void testEncoder(RelativeEncoder &encoder) {
-  Monitor.print("Encoder position: ");
-  Monitor.print(encoder.angleDegrees());
+void testEncoders(RelativeEncoder &encoder1, RelativeEncoder &encoder2) {
+  Monitor.print("Encoder1 position: ");
+  Monitor.print(encoder1.angleDegrees());
+  Monitor.print(" degrees, Encoder2 position: ");
+  Monitor.print(encoder2.angleDegrees());
   Monitor.println(" degrees");
-  delay(1000);
+  delay(100);
 }
