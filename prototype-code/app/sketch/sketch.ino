@@ -14,69 +14,50 @@ constexpr uint8_t LEFT_ESC_PIN = 11;
 constexpr uint8_t RIGHT_ESC_PIN = 9;
 constexpr bool LEFT_ESC_REVERSED = true;
 constexpr bool RIGHT_ESC_REVERSED = false;
+constexpr int LEFT_ESC_NEUTRAL_US = 1450;
+constexpr int RIGHT_ESC_NEUTRAL_US = 1450;
 constexpr unsigned long ESC_ARM_MS =
     5000; // Allow time for ESC startup and arming.
 constexpr unsigned int ESC_ARM_BLINK_WAIT_MS = 100;
 
-enum class DriveMode { Idle, BenchTest, PulseCalibration, PrototypeCourse };
-constexpr DriveMode DRIVE_MODE = DriveMode::PulseCalibration;
+enum class DriveMode { Idle, BenchTest, EncoderTest, PulseCalibration, PrototypeCourse };
+constexpr DriveMode DRIVE_MODE = DriveMode::EncoderTest;
 
 // Sensor Pin Definitions
-constexpr uint8_t ULTRASONIC_TRIG_PIN = 6;
-constexpr uint8_t ULTRASONIC_ECHO_PIN = 7;
+constexpr uint8_t ULTRASONIC_TRIG_PIN = 2;
+constexpr uint8_t ULTRASONIC_ECHO_PIN = 3;
 constexpr long OBSTACLE_DISTANCE_CM = 30;
 constexpr unsigned long SENSOR_PERIOD_MS = 60;
 
-// REV Through Bore encoders use 2048 cycles per revolution, or 8192 counts
-// when decoding all four quadrature edges.
-constexpr int32_t ENCODER_COUNTS_PER_REV = 8192;
+// REV Through Bore encoders produce 2048 cycles per shaft revolution.
+// The quadrature decoder counts all four edges in each cycle.
 constexpr uint8_t LEFT_ENCODER_A_PIN = 4;
 constexpr uint8_t LEFT_ENCODER_B_PIN = 5;
 constexpr uint8_t RIGHT_ENCODER_A_PIN = 7;
 constexpr uint8_t RIGHT_ENCODER_B_PIN = 6;
+constexpr bool LEFT_ENCODER_REVERSED = false;
+constexpr bool RIGHT_ENCODER_REVERSED = true;
 
-TeamOneMotorController leftMotor(LEFT_ESC_PIN, LEFT_ESC_REVERSED);
-TeamOneMotorController rightMotor(RIGHT_ESC_PIN, RIGHT_ESC_REVERSED);
+TeamOneMotorController leftMotor(LEFT_ESC_PIN, LEFT_ESC_REVERSED, LEFT_ESC_NEUTRAL_US);
+TeamOneMotorController rightMotor(RIGHT_ESC_PIN, RIGHT_ESC_REVERSED, RIGHT_ESC_NEUTRAL_US);
 TankDrivetrain drivetrain(leftMotor, rightMotor);
 ArduinoQuadratureEncoder leftEncoder(LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN,
-                                     ENCODER_COUNTS_PER_REV);
+                                     ENCODER_COUNTS_PER_REV, LEFT_ENCODER_REVERSED);
 ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
-                                      ENCODER_COUNTS_PER_REV, true);
+                                      ENCODER_COUNTS_PER_REV, RIGHT_ENCODER_REVERSED);
 
 void setup() {
-  // Start sending neutral before opening the Monitor connection.
+  // Servo repeats neutral while we wait for ESC power and Monitor input.
   leftMotor.begin();
   rightMotor.begin();
   Monitor.begin();
+
   Monitor.println("Starting...");
 
-  if (DRIVE_MODE == DriveMode::PulseCalibration) {
-    Monitor.println("Sending neutral to both ESCs. Power on the robot and let the ESCs arm.");
-    delay(ESC_ARM_MS);
-    discardMonitorInput(Monitor);
-    runPulseCalibration(Monitor, leftMotor, rightMotor);
-    return;
-  }
-
-  if (!leftEncoder.begin() || !rightEncoder.begin()) {
-    Monitor.println("Failed to initialize wheel encoders.");
-    // while (true) {
-    //   delay(1000);
-    // }
-  }
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  for (int i = 0; i < 10; i++) {
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(200);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(200);
-  }
-
-  Monitor.println("Holding ESCs at neutral for arming.");
   // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
   // The Servo library keeps sending neutral pulses during this wait.
   drivetrain.stop();
+  Monitor.println("Holding ESCs at neutral for arming.");
   waitForMonitorMessage(Monitor, "Waiting for a monitor message to continue...");
   // for (unsigned int i = 0; i < ESC_ARM_MS;) {
   //   digitalWrite(LED_BUILTIN, LOW);
@@ -86,7 +67,25 @@ void setup() {
   //   i += ESC_ARM_BLINK_WAIT_MS * 2;
   // }
 
-  if (DRIVE_MODE == DriveMode::BenchTest) {
+  const bool leftEncoderReady = leftEncoder.begin();
+  const bool rightEncoderReady = rightEncoder.begin();
+
+  Monitor.println(leftEncoderReady ? "Left encoder initialized." : "Left encoder initialization failed.");
+  Monitor.println(rightEncoderReady ? "Right encoder initialized." : "Right encoder initialization failed.");
+  if (!leftEncoderReady || !rightEncoderReady) {
+    // while (true) {
+    //   delay(1000);
+    // }
+  }
+
+  if (DRIVE_MODE == DriveMode::PulseCalibration) {
+    Monitor.println("Sending neutral to both ESCs. Power on the robot and let the ESCs arm.");
+    delay(ESC_ARM_MS);
+    discardMonitorInput(Monitor);
+    runPulseCalibration(Monitor, leftMotor, rightMotor);
+  } else if (DRIVE_MODE == DriveMode::EncoderTest) {
+    runEncoderBenchTest(drivetrain, leftEncoder, rightEncoder);
+  } else if (DRIVE_MODE == DriveMode::BenchTest) {
     runBenchTest(drivetrain);
   } else if (DRIVE_MODE == DriveMode::PrototypeCourse) {
     // pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);

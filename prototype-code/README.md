@@ -115,17 +115,18 @@ If the board's IP changes, the script asks for the new one.
 
 Use one [Repeat AM32 drive ESC](https://repeat-robotics.com/products/repeat-am32-drive-esc) per
 [Repeat Drive Pro motor](https://repeat-robotics.com/products/repeat-drive-pro). Connect each
-motor's three phase wires to its own ESC. Wire the left ESC signal to UNO Q **D9** and the right
-ESC signal to **D10**. Tie both ESC signal grounds to UNO Q GND. Power the ESCs from a battery
+motor's three phase wires to its own ESC. Wire the left ESC signal to UNO Q **D11** and the right
+ESC signal to **D9**. Tie both ESC signal grounds to UNO Q GND. Power the ESCs from a battery
 within both the ESC and the installed motor variant's ratings, and power the UNO Q separately.
 The UNO Q signal is 3.3 V; keep battery voltage off its headers.
 
 The sketch expects bidirectional **RC servo input** (AM32 Auto or Servo, with bidirectional drive
 and normal immediate reverse). It sends pulses about every 20 ms using Arduino's `Servo` library
-and defaults to 1000 / 1500 / 2000 µs for reverse / neutral / forward before direction inversion.
+and defaults to 1000 / 1450 / 2000 µs for reverse / neutral / forward before direction inversion.
 Leave the Repeat motor settings in place. If either ESC has been reconfigured, check its input
 mode and servo endpoints/neutral in the [AM32 configurator](https://github.com/am32-firmware/AM32#firmware-release--configuration-tool)
-before changing the pulse constants in `TeamOneMotorController.cpp`.
+before changing the pulse constants in `TeamOneMotorController.cpp`. Neutral is defined in
+`sketch.ino`.
 
 The App Lab sketch profile declares `Servo` 1.3.0, which supports the UNO Q. If building in
 Arduino IDE, select **Arduino UNO Q**, install **Servo 1.3.0** in Library Manager, and open
@@ -133,7 +134,7 @@ Arduino IDE, select **Arduino UNO Q**, install **Servo 1.3.0** in Library Manage
 
 1. Raise both wheels off the ground and start the sketch in its default `DriveMode::Idle`.
    Confirm both ESCs arm and neither wheel moves. If checking the signal with a scope, look
-   for a 1500 µs high pulse about every 20 ms on both pins.
+   for a 1450 µs high pulse about every 20 ms on both pins.
 2. Change `DRIVE_MODE` in `sketch.ino` to `DriveMode::BenchTest` and restart with the ESCs
    powered. After three seconds at neutral, the sketch commands each wheel forward and reverse
    at about one quarter throttle for 500 ms each, with a neutral pause between commands. It
@@ -146,24 +147,36 @@ Arduino IDE, select **Arduino UNO Q**, install **Servo 1.3.0** in Library Manage
 ### Calibrate ESC pulses in the Serial Monitor
 
 Set `DRIVE_MODE` to `DriveMode::PulseCalibration` and build once. Secure the car with
-both wheels clear of the bench. Start the app on the UNO Q first so it starts
-sending 1500 µs to both ESCs. Then power on the robot and let the ESCs arm. You
+both wheels off theg ground. Start the app on the UNO Q first so it starts
+sending 1450 µs to both ESCs. Then power on the robot and let the ESCs arm. You
 can unplug the computer's USB cable once the UNO Q has its own power. `Ready`
 means the Monitor accepts commands. The ESCs keep receiving neutral until you
-send a valid wheel command. Once the ESCs have armed, send one command per line
-in App Lab's **Console → Serial Monitor**. Reconnect over Wi-Fi if you unplugged
-USB. For a movement check, send `l 1625` or `r 1625` and look for the `accepted`
+send a valid wheel command. Once the ESCs have armed, send one command per line. Reconnect over Wi-Fi if you unplugged
+ with 
+`arduino-app-cli monitor`USB. For a movement check, send `l 1625` or `r 1625` and look for the `accepted`
 message. The commands below let you check neutral or end a trial.
 
 | Command | Action |
 | --- | --- |
 | `l 1495` | Send a raw 1495 µs pulse to the left ESC |
 | `r 1505` | Send a raw 1505 µs pulse to the right ESC |
-| `stop` | Return both ESCs to the controller's baseline 1500 µs pulse |
+| `stop` | Return both ESCs to the controller's baseline 1450 µs pulse |
 
 The range is 1000–2000 µs. Each trial lasts five seconds, then both ESCs return to
-1500 µs. The other ESC stays at 1500 µs during the trial, so it may still twitch.
+1450 µs. The other ESC stays at its configured neutral during the trial.
 Keep the battery disconnect within reach. Raw pulses bypass the wheel reversal
-flags. Start at 1500 µs and try a few microseconds on either side to find the
+flags. Start at 1450 µs and try a few microseconds on either side to find the
 center of each wheel's observed no-motion range. Record the results separately.
 Pulse trials are temporary. Select the desired drive mode before the competition.
+
+### Test the wheel encoders under power
+
+Select `DriveMode::EncoderTest`. Secure the car with both wheels raised. Start
+the UNO Q first, power on the robot, and let the ESCs arm. Follow the prompts
+in **Console → Serial Monitor**. Each reply tests the named wheel. The sketch
+zerthe output monitormed wheel forward to one encoder revolution
+(8192 counts), pauses for the tape check, then reverses to the starting count.
+It prints both settle to check that it rotated exactly 360 degreesch move so you can see any overshoot.
+Each move times out after 15 seconds and returns both ESCs to neutral. Restart
+the app to repeat the test. The encoder channels are on D4/D5 (left) and D7/D6 (right).
+The ultrasonic trigger and echo are on D2 and D3.
