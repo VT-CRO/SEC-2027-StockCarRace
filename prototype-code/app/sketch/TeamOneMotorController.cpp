@@ -2,14 +2,15 @@
 #include <Arduino.h>
 
 namespace {
-constexpr int NEUTRAL_PULSE_US = 1500;
 constexpr float MAX_COMMAND = 1.0;
 } // namespace
 
 // The list after ':' initializes the const members from the constructor
 // arguments.
-TeamOneMotorController::TeamOneMotorController(uint8_t signalPin, bool reversed)
-    : signalPin(signalPin), reversed(reversed) {}
+TeamOneMotorController::TeamOneMotorController(uint8_t signalPin, bool reversed,
+                                               int neutralPulseUs)
+    : signalPin(signalPin), reversed(reversed),
+      neutralPulseUs(constrain(neutralPulseUs, MIN_PULSE_US, MAX_PULSE_US)) {}
 
 void TeamOneMotorController::begin() {
   signal.attach(signalPin);
@@ -24,14 +25,14 @@ void TeamOneMotorController::runOpenLoop(float velocity) {
 
   // Map -1.0..0..1.0 to the ESC's minimum, neutral, and maximum pulse widths.
   // Scale each side from neutral separately so the endpoints can differ.
-  const long span = command < 0 ? NEUTRAL_PULSE_US - MIN_PULSE_US
-                                : MAX_PULSE_US - NEUTRAL_PULSE_US;
-  writePulseMicroseconds(NEUTRAL_PULSE_US + command * span / MAX_COMMAND);
+  const long span = command < 0 ? neutralPulseUs - MIN_PULSE_US
+                                : MAX_PULSE_US - neutralPulseUs;
+  writePulseMicroseconds(neutralPulseUs + command * span / MAX_COMMAND);
 }
 
 void TeamOneMotorController::stop() {
   // Servo's timer repeats this pulse until the width changes or we detach.
-  writePulseMicroseconds(NEUTRAL_PULSE_US);
+  writePulseMicroseconds(neutralPulseUs);
 }
 
 void TeamOneMotorController::writePulseMicroseconds(int pulseUs) {
