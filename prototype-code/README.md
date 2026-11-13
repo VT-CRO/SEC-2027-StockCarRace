@@ -82,6 +82,18 @@ It first shows a dry run of what would change, then asks for confirmation before
 
 To avoid conflicts, treat the repo on your laptop as the source of truth. Deploy to test, and only edit on the board for quick fixes that you pull and commit right away. The next `deploy` overwrites whatever is on the board.
 
+## Deploying to the Uno Q (Windows)
+
+First time only:
+    `.\deploy setup-key`
+
+Then:
+- `.\deploy deploy` push your changes to the board
+- `.\deploy pull` bring the board's changes back
+- `.\deploy restart` also: start, stop
+
+If the board's IP changes, the script asks for the new one.
+
 ## Notes
 
 - `.git`, `__pycache__`, `.venv`, and `.cache` are never synced in either direction. `.cache` holds App Lab's build and library cache on the board, and keeping it makes restarts faster. Make sure `.cache/` is in `.gitignore`.
