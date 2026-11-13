@@ -3,6 +3,7 @@
 
 #include "MotorController.hpp"
 #include <Servo.h>
+#include <stdint.h>
 
 // Controls one Repeat AM32 drive ESC using bidirectional RC servo pulses.
 // The Servo library repeats a pulse on the signal pin about every 20 ms.
@@ -13,6 +14,9 @@
 // load.
 class TeamOneMotorController : public MotorController {
 public:
+  static constexpr int MIN_PULSE_US = 1000; // i dont think these are right
+  static constexpr int MAX_PULSE_US = 2000;
+
   explicit TeamOneMotorController(uint8_t signalPin, bool reversed = false);
 
   // Call from setup() and allow the ESC to arm at neutral before driving.
@@ -21,6 +25,9 @@ public:
   void runOpenLoop(float velocity) override;
 
   void stop() override;
+
+  // Raw ESC pulse for bench calibration, independent of wheel reversal.
+  void writePulseMicroseconds(int pulseUs);
 
 private:
   const uint8_t signalPin;

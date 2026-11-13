@@ -2,9 +2,7 @@
 #include <Arduino.h>
 
 namespace {
-constexpr int MIN_PULSE_US = 1000;
 constexpr int NEUTRAL_PULSE_US = 1500;
-constexpr int MAX_PULSE_US = 2000;
 constexpr float MAX_COMMAND = 1.0;
 } // namespace
 
@@ -28,7 +26,14 @@ void TeamOneMotorController::runOpenLoop(float velocity) {
   // Scale each side from neutral separately so the endpoints can differ.
   const long span = command < 0 ? NEUTRAL_PULSE_US - MIN_PULSE_US
                                 : MAX_PULSE_US - NEUTRAL_PULSE_US;
-  signal.writeMicroseconds(NEUTRAL_PULSE_US + command * span / MAX_COMMAND);
+  writePulseMicroseconds(NEUTRAL_PULSE_US + command * span / MAX_COMMAND);
 }
 
-void TeamOneMotorController::stop() { runOpenLoop(0); }
+void TeamOneMotorController::stop() {
+  // Servo's timer repeats this pulse until the width changes or we detach.
+  writePulseMicroseconds(NEUTRAL_PULSE_US);
+}
+
+void TeamOneMotorController::writePulseMicroseconds(int pulseUs) {
+  signal.writeMicroseconds(constrain(pulseUs, MIN_PULSE_US, MAX_PULSE_US));
+}
