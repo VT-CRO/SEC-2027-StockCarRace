@@ -1,0 +1,26 @@
+LEFT MOTOR:
+1505 - jitter
+1550 - like mostly rolling
+1490 - jitter, maybe slower
+1480 - jitter, maybe slower
+1450 - stopped
+1430 - jitter, going forward slightly this time
+1400 - rolling forward slowly
+1420 - very slow, jitter forward
+1440 - stopped
+1435 - slow jitter forward
+1445 - stopped
+1455 - stopped
+1460 - stopped
+1470 - small jitters backwards
+1465 - tiniest jitters backwards
+
+RIGHT MOTOR:
+1600 - forward fast
+1550 - roll forward, sometimes skipping fast
+1450 - stopped
+1460 - small, very tiny jitters forwards
+1440 - stopped
+1430 - tiny jitters backwards
+1435 - tiny jitters backwards
+1455 - stopped

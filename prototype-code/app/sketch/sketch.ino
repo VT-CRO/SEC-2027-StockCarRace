@@ -1,5 +1,7 @@
 #include "ArduinoQuadratureEncoder.hpp"
 #include "BenchTest.hpp"
+#include "MonitorInput.hpp"
+#include "PulseCalibration.hpp"
 #include "TankDrivetrain.hpp"
 #include "TeamOneMotorController.hpp"
 #include "ultrasonic.hpp"
@@ -16,8 +18,8 @@ constexpr unsigned long ESC_ARM_MS =
     5000; // Allow time for ESC startup and arming.
 constexpr unsigned int ESC_ARM_BLINK_WAIT_MS = 100;
 
-enum class DriveMode { Idle, BenchTest, PrototypeCourse };
-constexpr DriveMode DRIVE_MODE = DriveMode::BenchTest;
+enum class DriveMode { Idle, BenchTest, PulseCalibration, PrototypeCourse };
+constexpr DriveMode DRIVE_MODE = DriveMode::PulseCalibration;
 
 // Sensor Pin Definitions
 constexpr uint8_t ULTRASONIC_TRIG_PIN = 6;
@@ -41,32 +43,20 @@ ArduinoQuadratureEncoder leftEncoder(LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN,
 ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
                                       ENCODER_COUNTS_PER_REV, true);
 
-void flushInput() {
-  while (Monitor.available() > 0) {
-    Monitor.read();
-  }
-}
-
-void waitForKey() {
-  // Let any trailing newline from a previous key arrive, then discard
-  // everything so a stale key can't start (or stop) the run
-  delay(300);
-  flushInput();
-  Monitor.println("Waiting for a monitor message to continue...");
-  while (Monitor.available() <= 0) {
-    delay(10);
-  }
-  // Let a trailing newline arrive, then discard it so it can't act as a stop
-  // key
-  delay(100);
-  flushInput();
-}
-
 void setup() {
-  Bridge.begin();
-  Monitor.println("Starting...");
+  // Start sending neutral before opening the Monitor connection.
   leftMotor.begin();
   rightMotor.begin();
+  Monitor.begin();
+  Monitor.println("Starting...");
+
+  if (DRIVE_MODE == DriveMode::PulseCalibration) {
+    Monitor.println("Sending neutral to both ESCs. Power on the robot and let the ESCs arm.");
+    delay(ESC_ARM_MS);
+    discardMonitorInput(Monitor);
+    runPulseCalibration(Monitor, leftMotor, rightMotor);
+    return;
+  }
 
   if (!leftEncoder.begin() || !rightEncoder.begin()) {
     Monitor.println("Failed to initialize wheel encoders.");
@@ -87,7 +77,7 @@ void setup() {
   // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
   // The Servo library keeps sending neutral pulses during this wait.
   drivetrain.stop();
-  waitForKey();
+  waitForMonitorMessage(Monitor, "Waiting for a monitor message to continue...");
   // for (unsigned int i = 0; i < ESC_ARM_MS;) {
   //   digitalWrite(LED_BUILTIN, LOW);
   //   delay(ESC_ARM_BLINK_WAIT_MS);

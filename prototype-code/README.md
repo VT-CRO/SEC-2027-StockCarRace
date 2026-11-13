@@ -142,3 +142,28 @@ Arduino IDE, select **Arduino UNO Q**, install **Servo 1.3.0** in Library Manage
    repeat. Set `DRIVE_MODE` back to `Idle` after testing. `PrototypeCourse` opts into the old
    timed driving and ultrasonic avoidance routine; its timings need to be tuned for the new
    chassis. The controller commands throttle and has no wheel speed or distance feedback.
+
+### Calibrate ESC pulses in the Serial Monitor
+
+Set `DRIVE_MODE` to `DriveMode::PulseCalibration` and build once. Secure the car with
+both wheels clear of the bench. Start the app on the UNO Q first so it starts
+sending 1500 µs to both ESCs. Then power on the robot and let the ESCs arm. You
+can unplug the computer's USB cable once the UNO Q has its own power. `Ready`
+means the Monitor accepts commands. The ESCs keep receiving neutral until you
+send a valid wheel command. Once the ESCs have armed, send one command per line
+in App Lab's **Console → Serial Monitor**. Reconnect over Wi-Fi if you unplugged
+USB. For a movement check, send `l 1625` or `r 1625` and look for the `accepted`
+message. The commands below let you check neutral or end a trial.
+
+| Command | Action |
+| --- | --- |
+| `l 1495` | Send a raw 1495 µs pulse to the left ESC |
+| `r 1505` | Send a raw 1505 µs pulse to the right ESC |
+| `stop` | Return both ESCs to the controller's baseline 1500 µs pulse |
+
+The range is 1000–2000 µs. Each trial lasts five seconds, then both ESCs return to
+1500 µs. The other ESC stays at 1500 µs during the trial, so it may still twitch.
+Keep the battery disconnect within reach. Raw pulses bypass the wheel reversal
+flags. Start at 1500 µs and try a few microseconds on either side to find the
+center of each wheel's observed no-motion range. Record the results separately.
+Pulse trials are temporary. Select the desired drive mode before the competition.
