@@ -8,15 +8,17 @@
 
 
 MPU6050IO imu;
-ToF tof;
+ToF tof;      
 
 int state = 0;
+int turnCount = 0;
+int triggerReadings = 0;
 double currentTargetYaw = 0;
 double currentForward = 1;
 
 
-MotorControl R = MotorControl(L_PIN_1, L_PIN_2, L_PWM);
-MotorControl L = MotorControl(R_PIN_1, R_PIN_2, R_PWM);
+MotorControl L = MotorControl(L_PIN_1, L_PIN_2, L_PWM);
+MotorControl R = MotorControl(R_PIN_1, R_PIN_2, R_PWM);
 
 
 DriveTrain Robot(L, R);
@@ -54,7 +56,7 @@ void setup() {
     delay(200);                      // wait for a second
   }
 
-  Monitor.println("Setup complete, waiting for imu calibration");
+  // Monitor.println("Setup complete, waiting for imu calibration");
   imu.calibrate();
 
 
@@ -63,23 +65,51 @@ void setup() {
     delay(2000);
   };
 
+  imu.reset();
+
+  delay(100);
+
   Monitor.println("Starting...");
 }
 
 void loop() {
   double dis = tof.readDistanceCm();
 
+  // Monitor.println("help me");
+
   double error = Robot.drive(currentForward, currentTargetYaw, imu, 1.0f);
+  
+  // Robot.print_robot_states();
+  // Robot.set_motor_states(1, 1);
+  // R.Motor_start(255);
+  // L.Motor_start(255);
+
+   
+  float triggerDis = 10.0f;
 
   switch (state) {
     case 0:
-      if (dis < 30) {
-        currentTargetYaw -= PI / 2;
-        if (currentTargetYaw < -PI) { // wrapping back
-          currentTargetYaw += 2 * PI;
+      if (turnCount % 4 == 2) {
+        triggerDis = 80.0f;
+      }
+
+      if (dis < triggerDis) {
+        if (++triggerReadings >= 3) {
+          triggerReadings = 0;
+          turnCount++;
+          currentTargetYaw -= PI / 2;
+          if (currentTargetYaw < -PI) { // wrapping back
+            currentTargetYaw += 2 * PI;
+          }
+          currentForward = 0;
+          state = 1;
+          Monitor.print("State: ");
+          Monitor.print(state);
+          Monitor.print(" Distance: " );
+          Monitor.println(dis);
         }
-        currentForward = 0;
-        state = 1;
+      } else {
+        triggerReadings = 0;
       }
       break;
     case 1:
@@ -89,9 +119,11 @@ void loop() {
       }
       break;
   }
-
-  Monitor.print("Distance: ");
-  Monitor.println(dis);
+  // Monitor.print(" Distance: " );
+  // Monitor.println(dis);
+  
+  // Monitor.print("Heading error: ");
+  // Monitor.println(error * (180.0f/PI));
 
   delay(20);
 }

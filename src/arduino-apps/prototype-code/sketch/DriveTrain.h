@@ -3,6 +3,8 @@
 
 #include "MotorControl.h"
 
+class MPU6050IO;
+
 class DriveTrain {
 
 public: 
@@ -12,27 +14,24 @@ DriveTrain(MotorControl L, MotorControl R);
 DriveTrain(int L_1, int L_2, int L_3, int R_1, int R_2, int R_3);
 
 void stop();
+/* Drives at normalized forward speed toward targetYaw; returns yaw error in radians, or NAN without a fresh IMU reading. */
+float drive(float forward, float targetYaw, MPU6050IO& imu, float outputLimit = 1.0f);
 
-void Forward(int speed);
-void Backward(int speed);
-void Right(int speed, double stepdown);
-void Left(int speed, double stepdown);
-void Clockwise(int speed);
-void Counterclockwise(int speed);
 
-void TestMotor(MotorControl test, int speed);
-void TestMotors(int speed);
-void TestDrive(int speed);
+void set_motor_states(float left, float right);
 
-void PrintThing(String name, double value);
+void print_robot_states();
 
 private:
 
 MotorControl M_Left;
 MotorControl M_Right;
-
+ 
 
 public:
+
+double rightM_state;
+double leftM_state;
 
 double E_Left_Prev{0};
 double E_Right_Prev{0};

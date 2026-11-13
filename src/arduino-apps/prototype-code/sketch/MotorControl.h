@@ -14,9 +14,6 @@
 
 // #include "arduino_freertos.h"
 #include "Arduino.h"
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-
 #define tskPID_PRIORITY 7 // can be changed. Up for discussion
 
 #define PID_LOOP_PERIOD 50
