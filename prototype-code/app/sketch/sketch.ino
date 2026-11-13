@@ -8,11 +8,10 @@
 
 // UNO Q header pins. Set each direction so a positive command moves the car
 // forward.
-constexpr uint8_t LEFT_ESC_PIN = 9;
-constexpr uint8_t RIGHT_ESC_PIN = 11;
-constexpr bool LEFT_ESC_REVERSED = false;
-constexpr bool RIGHT_ESC_REVERSED =
-    true; // Initial guess for mirrored mounting.
+constexpr uint8_t LEFT_ESC_PIN = 11;
+constexpr uint8_t RIGHT_ESC_PIN = 9;
+constexpr bool LEFT_ESC_REVERSED = true;
+constexpr bool RIGHT_ESC_REVERSED = false;
 constexpr unsigned long ESC_ARM_MS =
     5000; // Allow time for ESC startup and arming.
 constexpr unsigned int ESC_ARM_BLINK_WAIT_MS = 100;
@@ -42,6 +41,27 @@ ArduinoQuadratureEncoder leftEncoder(LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN,
 ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
                                       ENCODER_COUNTS_PER_REV, true);
 
+void flushInput() {
+  while (Monitor.available() > 0) {
+    Monitor.read();
+  }
+}
+
+void waitForKey() {
+  // Let any trailing newline from a previous key arrive, then discard
+  // everything so a stale key can't start (or stop) the run
+  delay(300);
+  flushInput();
+  Monitor.println("Waiting for a monitor message to continue...");
+  while (Monitor.available() <= 0) {
+    delay(10);
+  }
+  // Let a trailing newline arrive, then discard it so it can't act as a stop
+  // key
+  delay(100);
+  flushInput();
+}
+
 void setup() {
   Bridge.begin();
   Monitor.println("Starting...");
@@ -67,13 +87,14 @@ void setup() {
   // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
   // The Servo library keeps sending neutral pulses during this wait.
   drivetrain.stop();
-  for (unsigned int i = 0; i < ESC_ARM_MS;) {
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(ESC_ARM_BLINK_WAIT_MS);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(ESC_ARM_BLINK_WAIT_MS);
-    i += ESC_ARM_BLINK_WAIT_MS * 2;
-  }
+  waitForKey();
+  // for (unsigned int i = 0; i < ESC_ARM_MS;) {
+  //   digitalWrite(LED_BUILTIN, LOW);
+  //   delay(ESC_ARM_BLINK_WAIT_MS);
+  //   digitalWrite(LED_BUILTIN, HIGH);
+  //   delay(ESC_ARM_BLINK_WAIT_MS);
+  //   i += ESC_ARM_BLINK_WAIT_MS * 2;
+  // }
 
   if (DRIVE_MODE == DriveMode::BenchTest) {
     runBenchTest(drivetrain);
