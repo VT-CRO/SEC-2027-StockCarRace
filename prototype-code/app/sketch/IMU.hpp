@@ -24,9 +24,9 @@ public:
   virtual bool calibrate() = 0;
 
   /**
-   * Update the sensor reading. Must be called periodically.
+   * Update the sensor reading. Return false if the read fails.
    */
-  virtual void update() = 0;
+  virtual bool update() = 0;
 
   /**
    * getHeadingRads() returns the current heading, [-pi, pi).

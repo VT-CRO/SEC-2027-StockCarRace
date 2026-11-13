@@ -79,14 +79,7 @@ bool MPU6050IMU::calibrate() {
 
 void MPU6050IMU::manuallyCalibrate(float bias_) { bias = bias_; }
 
-void MPU6050IMU::update() {
-  if (last_read == 0) {
-    // On the very first call to update, just initialize the last_read time.
-    // We can't integrate yet because we don't have a real delta time.
-    last_read = micros();
-    return;
-  }
-
+bool MPU6050IMU::update() {
   // Initialize now before the i2c read to avoid extra delay
   unsigned long now = micros();
 
@@ -95,22 +88,26 @@ void MPU6050IMU::update() {
   bool success = getGyroZRadPerSec(&gyroZRadPerSec);
 
   // Don't integrate with garbage data from i2c error
-  if (!success)
-    return;
+  if (!success) {
+    last_read = 0;
+    return false;
+  }
 
   // Integrate and add to heading
-  float dt = (now - last_read) * 1e-6f;
+  const float dt = last_read == 0 ? 0.0f : (now - last_read) * 1e-6f;
   last_read = now;
   headingRads += (gyroZRadPerSec - bias) * dt;
 
   // Normalize heading
   headingRads = wrapAngle(headingRads);
+  return true;
 }
 
 float MPU6050IMU::getHeadingRads() { return headingRads; }
 
 void MPU6050IMU::resetHeading(float newHeading) {
   headingRads = wrapAngle(newHeading);
+  last_read = 0;
 }
 
 void MPU6050IMU::print_error(const char *message) {

@@ -53,7 +53,7 @@ public:
    */
   void manuallyCalibrate(float bias_);
 
-  void update() override;
+  bool update() override;
 
   float getHeadingRads() override;
 
