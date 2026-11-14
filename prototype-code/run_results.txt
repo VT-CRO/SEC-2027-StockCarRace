@@ -1,0 +1,36 @@
+Results of what happened when I was recording:
+Starting...
+Holding ESCs at neutral for arming.
+[MPU6050 68] Initialized Successfully.
+Let ESCs arm. Send straight to check the first leg, start to run laps, or stop.
+straight
+Keep the car still while the gyro calibrates.
+[MPU6050 68] Calibrated with bias: 0.00 rad/s average.
+Straight target reached. Estimated inches: 64.13 | Average wheel revolutions: 7.74
+First straight complete. Both ESCs at neutral.
+start
+Keep the car still while the gyro calibrates.
+[MPU6050 68] Calibrated with bias: 0.00 rad/s average.
+Straight target reached. Estimated inches: 64.17 | Average wheel revolutions: 7.74
+Course stopped: heading error reached 20 degrees.
+Estimated inches: 0.09 | Heading error (deg): 30.66
+start
+Keep the car still while the gyro calibrates.
+[MPU6050 68] Calibrated with bias: 0.00 rad/s average.
+Straight target reached. Estimated inches: 64.12 | Average wheel revolutions: 7.74
+Course stopped: heading error reached 20 degrees.
+Estimated inches: 0.09 | Heading error (deg): 27.37
+start
+Keep the car still while the gyro calibrates.
+[MPU6050 68] Calibrated with bias: 0.00 rad/s average.
+Straight target reached. Estimated inches: 64.17 | Average wheel revolutions: 7.74
+Course stopped: heading error reached 20 degrees.
+Estimated inches: 0.10 | Heading error (deg): 31.29
+
+Race day testing:
+First run hit the wall after the first turn
+Second run overshot the return straight back
+Third run failed to read the IMU
+- I noticed that the wires for the IMU were bent, so I replaced them
+Fourth run caused "turn timeout" and spun the heck out.
+- I'm suspicious of the correction overshooting when something drops

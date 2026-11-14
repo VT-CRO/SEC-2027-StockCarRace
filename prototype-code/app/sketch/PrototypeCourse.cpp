@@ -12,8 +12,8 @@ namespace {
 constexpr float MM_PER_INCH = 25.4f;
 constexpr float RADS_PER_DEG = static_cast<float>(M_PI) / 180.0f;
 constexpr float DEG_PER_RAD = 1.0f / RADS_PER_DEG;
-constexpr float ENTRY_INCHES = 62.0f; // Starting square to the first turn, once per run.
-constexpr float SHORT_INCHES = 18.0f; // Distance across the short edges between turns.
+constexpr float ENTRY_INCHES = 61.0f; // Starting square to the first turn, once per run.
+constexpr float SHORT_INCHES = 17.0f; // Distance across the short edges between turns.
 constexpr float LONG_INCHES = 42.0f; // Along the long straights between turns.
 constexpr unsigned COURSE_LAPS = 3;
 constexpr unsigned LEGS_PER_LAP = 4;
