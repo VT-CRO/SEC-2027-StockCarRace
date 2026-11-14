@@ -27,8 +27,11 @@ constexpr unsigned int ESC_ARM_BLINK_WAIT_MS = 100;
 const int A_PLUS = 1597, A_MINUS = 1376;
 const int B_PLUS = 1594, B_MINUS = 1370;
 
-enum class DriveMode { Idle, BenchTest, EncoderTest, HeadingTest, PulseCalibration, PrototypeCourse };
-constexpr DriveMode DRIVE_MODE = DriveMode::HeadingTest;
+enum class DriveMode {
+  Idle, BenchTest, EncoderTest, HeadingTest, StraightTest, PulseCalibration,
+  PrototypeCourse
+};
+constexpr DriveMode DRIVE_MODE = DriveMode::StraightTest;
 // A flat IMU with +Z pointing up reports a positive yaw for a left turn.
 constexpr bool IMU_YAW_REVERSED = false;
 
@@ -68,6 +71,20 @@ void setup() {
   // The Servo library keeps sending neutral pulses during this wait.
   drivetrain.stop();
   Monitor.println("Holding ESCs at neutral for arming.");
+  if (DRIVE_MODE == DriveMode::StraightTest) {
+    const bool leftReady = leftEncoder.begin();
+    const bool rightReady = rightEncoder.begin();
+    if (!leftReady || !rightReady) {
+      Monitor.println("Straight test unavailable: both encoders must initialize.");
+      return;
+    }
+    Wire.begin();
+    MPU6050IMU imu;
+    const bool imuReady = imu.begin();
+    runStraightBenchTest(drivetrain, leftEncoder, rightEncoder,
+                         imuReady ? &imu : nullptr, IMU_YAW_REVERSED);
+    return;
+  }
   if (DRIVE_MODE == DriveMode::HeadingTest) {
     Wire.begin();
     MPU6050IMU imu;
@@ -177,15 +194,15 @@ void loop() {
 
   Monitor.println("Driving down straightaway");
   //   driveAndAvoidObstacles(0.5, 0.5, 3000);
-  drivetrain.runOpenLoop(0.5, 0.5);
+  drivetrain.runOpenLoop(0.3, 0.3);
   delay(3000);
 
-  Monitor.println("Driving around corner");
-  //   driveAndAvoidObstacles(0.25, 0.5, 6000);
-  drivetrain.runOpenLoop(0.25, 0.5);
-  delay(6000);
+  // Monitor.println("Driving around corner");
+  // //   driveAndAvoidObstacles(0.25, 0.5, 6000);
+  // drivetrain.runOpenLoop(0.25, 0.5);
+  // delay(6000);
 
-  drivetrain.stop();
-  Monitor.println("Pausing");
-  delay(1000);
+  // drivetrain.stop();
+  // Monitor.println("Pausing");
+  // delay(1000);
 }

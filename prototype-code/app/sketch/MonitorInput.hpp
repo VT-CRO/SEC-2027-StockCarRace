@@ -23,7 +23,7 @@ public:
   enum class Result {
     Pending, // No complete command yet. Call poll() again later.
     Command, // A complete command is available through command().
-    Invalid  // The command exceeded 31 bytes or included nonprintable input.
+    Invalid  // The command exceeded 63 bytes or included nonprintable input.
   };
 
   // Reads at most one command per call. A carriage return, newline, or 150 ms
@@ -39,7 +39,7 @@ private:
   Result finish();
 
   Stream &input;
-  char buffer[32] = {};
+  char buffer[64] = {};
   size_t length = 0;
   bool invalid = false;
   unsigned long lastByteMs = 0;

@@ -196,3 +196,36 @@ when set to `false`. To check the sign, send `yaw`, hold the car still through
 calibration, then turn it left by hand when prompted. Hold the new angle until
 the test prints final yaw. The motors stay at neutral. If final yaw is negative
 after a left turn, flip `IMU_YAW_REVERSED` and repeat the check.
+
+### Compare encoder matching and gyro correction
+
+With `DriveMode::StraightTest` selected, let the ESCs arm and aim the car
+down a clear straightaway. Use the Serial Monitor to compare these runs
+from the same starting position:
+
+| Command | Test |
+| --- | --- |
+| `wheels 4 0.2 0.22 0` | Fixed throttle baseline for each wheel |
+| `wheels 4 0.2 0.22 0.3` | Encoder correction that targets equal wheel revolutions |
+| `both 4 0.2 0.22 0.3 1` | Same encoder correction with a gyro-adjusted travel target |
+
+The fields are seconds, left base throttle, right base throttle, wheel gain,
+and gyro gain for `both`. Adjust the base throttles until both wheels launch
+reliably. The example gives the right side a small extra command to try first.
+Keep still during gyro calibration in a combined trial. Each run starts the
+encoder counts at zero and reports wheel travel after commanding neutral.
+
+The same mode offers two separate RPM-target tests:
+
+| Command | Test |
+| --- | --- |
+| `rpm 4 30 0.2 0.22 0.001 0` | Both wheels track 30 RPM independently with P control |
+| `rpm 4 30 0.2 0.22 0.001 0.0002` | Same targets with a small integral term |
+| `rpmimu 4 30 0.2 0.22 0.001 0.0002 20` | Same wheel loops with gyro steering |
+
+The fields are seconds, target encoder-shaft RPM, left and right starting
+throttle, speed Kp and Ki, and gyro gain for `rpmimu`. The gyro gain is in
+RPM per radian. Gyro correction can shift each target by up to 25% of the
+base RPM. Start with a target both wheels can reach and adjust the starting
+throttles if one wheel launches late. After each run, compare average RPM,
+peak RPM difference, and, with the gyro enabled, peak yaw deviation.

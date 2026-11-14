@@ -204,3 +204,289 @@ void runEncoderBenchTest(TankDrivetrain &drivetrain, RelativeEncoder &left,
     Monitor.println("Encoder test complete. Both ESCs are holding neutral.");
   }
 }
+
+namespace {
+struct RpmTrial {
+  float seconds;
+  float rpm;
+  float leftBase;
+  float rightBase;
+  float kp;
+  float ki;
+  float yawKp;
+};
+
+bool readTrialFields(const char *fields, float *const *values, size_t count) {
+  for (size_t i = 0; i < count; ++i) {
+    char *end = nullptr;
+    *values[i] = strtof(fields, &end);
+    if (end == fields || !std::isfinite(*values[i]) ||
+        (*end != ' ' && *end != '\0')) {
+      return false;
+    }
+    fields = end;
+  }
+  while (*fields == ' ') {
+    ++fields;
+  }
+  return *fields == '\0';
+}
+
+bool readRpmTrial(const char *fields, RpmTrial &trial, bool combined) {
+  float *const values[] = {&trial.seconds, &trial.rpm, &trial.leftBase,
+                           &trial.rightBase, &trial.kp, &trial.ki, &trial.yawKp};
+  return readTrialFields(fields, values, combined ? 7 : 6) &&
+         trial.seconds >= 1.0f && trial.seconds <= 15.0f &&
+         trial.rpm > 0.0f && trial.rpm <= 300.0f &&
+         trial.leftBase >= 0.10f && trial.leftBase <= 0.35f &&
+         trial.rightBase >= 0.10f && trial.rightBase <= 0.35f &&
+         trial.kp >= 0.0f && trial.kp <= 0.01f &&
+         trial.ki >= 0.0f && trial.ki <= 0.01f &&
+         trial.yawKp >= 0.0f && trial.yawKp <= 200.0f;
+}
+
+float speedThrottle(float base, float error, float dt, const RpmTrial &trial,
+                    float &integral) {
+  constexpr float MAX_THROTTLE = 0.45f;
+  const float proportional = trial.kp * error;
+  const float output = base + proportional + integral;
+  const float integralStep = trial.ki * error * dt;
+  // Limit integration to the available throttle headroom. Allow an error of
+  // the opposite sign to unwind the integral when the output is saturated.
+  integral += constrain(integralStep, fminf(0.0f, -output),
+                        fmaxf(0.0f, MAX_THROTTLE - output));
+  return constrain(base + proportional + integral, 0.0f, MAX_THROTTLE);
+}
+
+void runRpmTrial(TankDrivetrain &drivetrain, RelativeEncoder &left,
+                 RelativeEncoder &right, IMU *imu, float yawSign,
+                 const RpmTrial &trial) {
+  constexpr unsigned long SPEED_SAMPLE_MS = 50;
+  constexpr float DEG_PER_RAD = 57.29578f;
+  if (imu) {
+    Monitor.println("Keep the car still while the gyro calibrates.");
+    if (!imu->calibrate()) {
+      return;
+    }
+    imu->resetHeading(0.0f);
+    if (!imu->update()) {
+      Monitor.println("RPM trial stopped: IMU read failed before launch.");
+      return;
+    }
+  }
+
+  left.reset();
+  right.reset();
+  int32_t lastLeftCount = 0;
+  int32_t lastRightCount = 0;
+  float leftIntegral = 0.0f;
+  float rightIntegral = 0.0f;
+  float peakSpeedGap = 0.0f;
+  float peakYawDeg = 0.0f;
+  float yaw = 0.0f;
+  const char *result = "RPM trial complete.";
+  const unsigned long durationMs = static_cast<unsigned long>(trial.seconds * 1000.0f);
+  const unsigned long started = millis();
+  unsigned long lastSample = started;
+  drivetrain.runOpenLoop(trial.leftBase, trial.rightBase);
+  while (millis() - started < durationMs) {
+    if (imu) {
+      if (!imu->update()) {
+        result = "RPM trial stopped: IMU read failed.";
+        break;
+      }
+      yaw = imu->getHeadingRads() * yawSign;
+      peakYawDeg = fmaxf(peakYawDeg, fabsf(yaw * DEG_PER_RAD));
+      if (peakYawDeg >= 20.0f) {
+        result = "RPM trial stopped: yaw reached 20 degrees.";
+        break;
+      }
+    }
+
+    const unsigned long now = millis();
+    const unsigned long intervalMs = now - lastSample;
+    if (intervalMs >= SPEED_SAMPLE_MS && now - started < durationMs) {
+      const int32_t leftCount = left.count();
+      const int32_t rightCount = right.count();
+      const float leftRpm = left.averageRpm(lastLeftCount, leftCount, intervalMs);
+      const float rightRpm = right.averageRpm(lastRightCount, rightCount, intervalMs);
+      peakSpeedGap = fmaxf(peakSpeedGap, fabsf(leftRpm - rightRpm));
+      // Positive yaw is a left turn. Raise the left target to steer right.
+      const float maxRpmTrim = trial.rpm * 0.25f;
+      const float rpmTrim = constrain(trial.yawKp * yaw, -maxRpmTrim, maxRpmTrim);
+      const float dt = intervalMs / 1000.0f;
+      const float leftError = trial.rpm + rpmTrim - leftRpm;
+      const float rightError = trial.rpm - rpmTrim - rightRpm;
+      drivetrain.runOpenLoop(speedThrottle(trial.leftBase, leftError, dt, trial, leftIntegral),
+                             speedThrottle(trial.rightBase, rightError, dt, trial, rightIntegral));
+      lastLeftCount = leftCount;
+      lastRightCount = rightCount;
+      lastSample = now;
+    }
+    delay(10);
+  }
+  drivetrain.stop();
+  const unsigned long elapsedMs = millis() - started;
+  const int32_t leftEnd = left.count();
+  const int32_t rightEnd = right.count();
+
+  Monitor.println(result);
+  Monitor.print("Left average RPM: ");
+  Monitor.println(left.averageRpm(0, leftEnd, elapsedMs));
+  Monitor.print("Right average RPM: ");
+  Monitor.println(right.averageRpm(0, rightEnd, elapsedMs));
+  Monitor.print("Peak wheel RPM difference: ");
+  Monitor.println(peakSpeedGap);
+  if (imu) {
+    Monitor.print("Final yaw (deg): ");
+    Monitor.println(yaw * DEG_PER_RAD);
+    Monitor.print("Peak yaw deviation (deg): ");
+    Monitor.println(peakYawDeg);
+  }
+}
+
+struct StraightTrial {
+  float seconds;
+  float leftBase;
+  float rightBase;
+  float wheelKp;
+  float yawKp;
+};
+
+bool readStraightTrial(const char *fields, StraightTrial &trial, bool combined) {
+  float *const values[] = {&trial.seconds, &trial.leftBase, &trial.rightBase,
+                           &trial.wheelKp, &trial.yawKp};
+  return readTrialFields(fields, values, combined ? 5 : 4) &&
+         trial.seconds >= 1.0f && trial.seconds <= 15.0f &&
+         trial.leftBase >= 0.10f && trial.leftBase <= 0.35f &&
+         trial.rightBase >= 0.10f && trial.rightBase <= 0.35f &&
+         trial.wheelKp >= 0.0f && trial.wheelKp <= 1.0f &&
+         trial.yawKp >= 0.0f && trial.yawKp <= 2.0f;
+}
+
+void runStraightTrial(TankDrivetrain &drivetrain, RelativeEncoder &left,
+                      RelativeEncoder &right, IMU *imu, float yawSign,
+                      const StraightTrial &trial) {
+  constexpr float MAX_TRIM = 0.10f;
+  constexpr float MAX_THROTTLE = 0.45f;
+  constexpr float DEG_PER_RAD = 57.29578f;
+  constexpr unsigned long SAMPLE_MS = 10;
+  const unsigned long durationMs = static_cast<unsigned long>(trial.seconds * 1000.0f);
+
+  if (imu) {
+    Monitor.println("Keep the car still while the gyro calibrates.");
+    if (!imu->calibrate()) {
+      return;
+    }
+    imu->resetHeading(0.0f);
+    if (!imu->update()) {
+      Monitor.println("Straight test stopped: IMU read failed before launch.");
+      return;
+    }
+  }
+
+  left.reset();
+  right.reset();
+  const char *result = "Straight trial complete.";
+  float yawDeg = 0.0f;
+  float peakYawDeg = 0.0f;
+  float peakWheelGap = 0.0f;
+  const unsigned long started = millis();
+  while (millis() - started < durationMs) {
+    float targetGap = 0.0f;
+    if (imu) {
+      if (!imu->update()) {
+        result = "Straight trial stopped: IMU read failed.";
+        break;
+      }
+      const float yaw = imu->getHeadingRads() * yawSign;
+      yawDeg = yaw * DEG_PER_RAD;
+      peakYawDeg = fmaxf(peakYawDeg, fabsf(yawDeg));
+      if (peakYawDeg >= 20.0f) {
+        result = "Straight trial stopped: yaw exceeded 20 degrees.";
+        break;
+      }
+      // Positive yaw is leftward, so request more left-wheel travel.
+      targetGap = trial.yawKp * yaw;
+    }
+
+    const float wheelGap = left.revolutions() - right.revolutions();
+    peakWheelGap = fmaxf(peakWheelGap, fabsf(wheelGap));
+    const float trim = constrain(trial.wheelKp * (targetGap - wheelGap),
+                                 -MAX_TRIM, MAX_TRIM);
+    drivetrain.runOpenLoop(constrain(trial.leftBase + trim, 0.0f, MAX_THROTTLE),
+                           constrain(trial.rightBase - trim, 0.0f, MAX_THROTTLE));
+    delay(SAMPLE_MS);
+  }
+  drivetrain.stop();
+
+  Monitor.println(result);
+  printEncoders(left, right);
+  Monitor.print("Peak wheel travel difference (rev): ");
+  Monitor.println(peakWheelGap, 3);
+  if (imu) {
+    Monitor.print("Final yaw (deg): ");
+    Monitor.println(yawDeg);
+    Monitor.print("Peak yaw deviation (deg): ");
+    Monitor.println(peakYawDeg);
+  }
+}
+} // namespace
+
+void runStraightBenchTest(TankDrivetrain &drivetrain, RelativeEncoder &left,
+                          RelativeEncoder &right, IMU *imu, bool yawReversed) {
+  drivetrain.stop();
+  MonitorCommandReader reader(Monitor);
+  discardMonitorInput(Monitor);
+  Monitor.println("Align the car on a clear straight and let the ESCs arm.");
+  Monitor.println("wheels <seconds> <left> <right> <wheel Kp>");
+  Monitor.println("both <seconds> <left> <right> <wheel Kp> <yaw Kp>");
+  Monitor.println("rpm <seconds> <RPM> <left base> <right base> <Kp> <Ki>");
+  Monitor.println("rpmimu <seconds> <RPM> <left base> <right base> <Kp> <Ki> <yaw Kp>");
+  if (!imu) {
+    Monitor.println("IMU unavailable. Use wheels or rpm for encoder-only trials.");
+  }
+
+  while (true) {
+    const auto status = reader.poll();
+    if (status == MonitorCommandReader::Result::Pending) {
+      delay(10);
+      continue;
+    }
+
+    const char *command = reader.command();
+    const bool rpmOnly = strncmp(command, "rpm ", 4) == 0;
+    const bool rpmWithImu = strncmp(command, "rpmimu ", 7) == 0;
+    if (status == MonitorCommandReader::Result::Command && (rpmOnly || rpmWithImu)) {
+      RpmTrial trial{};
+      if (!readRpmTrial(command + (rpmWithImu ? 7 : 4), trial, rpmWithImu)) {
+        Monitor.println("Use 1-15 seconds, 0-300 RPM (above zero), base 0.10-0.35, Kp/Ki 0-0.01, yaw Kp 0-200.");
+        continue;
+      }
+      if (rpmWithImu && (!imu || (trial.kp == 0.0f && trial.ki == 0.0f))) {
+        Monitor.println("rpmimu needs a working IMU and a positive speed gain.");
+        continue;
+      }
+      runRpmTrial(drivetrain, left, right, rpmWithImu ? imu : nullptr,
+                  yawReversed ? -1.0f : 1.0f, trial);
+      discardMonitorInput(Monitor);
+      continue;
+    }
+    const bool wheels = strncmp(command, "wheels ", 7) == 0;
+    const bool combined = strncmp(command, "both ", 5) == 0;
+    StraightTrial trial{};
+    if (status != MonitorCommandReader::Result::Command || (!wheels && !combined) ||
+        !readStraightTrial(command + (combined ? 5 : 7), trial, combined)) {
+      Monitor.println("Use 1-15 seconds, base throttles 0.10-0.35, wheel Kp 0-1, yaw Kp 0-2.");
+      continue;
+    }
+    if (combined && (!imu || trial.wheelKp == 0.0f)) {
+      Monitor.println("Combined trials need a working IMU and a positive wheel Kp.");
+      continue;
+    }
+
+    runStraightTrial(drivetrain, left, right, combined ? imu : nullptr,
+                     yawReversed ? -1.0f : 1.0f, trial);
+    discardMonitorInput(Monitor);
+  }
+}
