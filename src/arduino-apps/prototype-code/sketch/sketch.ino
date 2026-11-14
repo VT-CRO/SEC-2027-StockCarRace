@@ -15,6 +15,8 @@ int turnCount = 0;
 int triggerReadings = 0;
 double currentTargetYaw = 0;
 double currentForward = 1;
+const float TURN_FORWARD_SPEED = 0.8f;
+const float TURN_OUTPUT_LIMIT = 0.4f;
 
 
 MotorControl L = MotorControl(L_PIN_1, L_PIN_2, L_PWM);
@@ -32,18 +34,16 @@ void setup() {
   Monitor.println();
   Monitor.println("Start");
 
-  if (!tof.begin()) {
-    while (1) {
-      Monitor.println("Failed to initialize ToF sensor!");
-      delay(1000);
-    }
+  
+  while (!tof.begin()) {
+    Monitor.println("Failed to initialize ToF sensor!");
+    delay(1000);
   }
 
-  if (!imu.begin()) {
-    while (1) {
-      Monitor.println("Failed to initialize MPU6050 sensor!");
-      delay(1000);
-    }
+
+  while (!imu.begin()) {
+    Monitor.println("Failed to initialize MPU6050 sensor!");
+    delay(1000);
   }
 
 
@@ -77,7 +77,8 @@ void loop() {
 
   // Monitor.println("help me");
 
-  double error = Robot.drive(currentForward, currentTargetYaw, imu, 1.0f);
+  float outputLimit = state == 1 ? TURN_OUTPUT_LIMIT : 1.0f;
+  double error = Robot.drive(currentForward, currentTargetYaw, imu, outputLimit);
   
   // Robot.print_robot_states();
   // Robot.set_motor_states(1, 1);
@@ -85,12 +86,12 @@ void loop() {
   // L.Motor_start(255);
 
    
-  float triggerDis = 10.0f;
+  float triggerDis = 37.5f;
 
   switch (state) {
     case 0:
       if (turnCount % 4 == 2) {
-        triggerDis = 80.0f;
+        triggerDis = 105.0f;
       }
 
       if (dis < triggerDis) {
@@ -101,7 +102,7 @@ void loop() {
           if (currentTargetYaw < -PI) { // wrapping back
             currentTargetYaw += 2 * PI;
           }
-          currentForward = 0;
+          currentForward = TURN_FORWARD_SPEED;
           state = 1;
           Monitor.print("State: ");
           Monitor.print(state);
@@ -119,11 +120,11 @@ void loop() {
       }
       break;
   }
-  // Monitor.print(" Distance: " );
-  // Monitor.println(dis);
+  Monitor.print(" Distance: " );
+  Monitor.println(dis);
   
-  // Monitor.print("Heading error: ");
-  // Monitor.println(error * (180.0f/PI));
+  Monitor.print("Heading error: ");
+  Monitor.println(error * (180.0f/PI));
 
   delay(20);
 }
