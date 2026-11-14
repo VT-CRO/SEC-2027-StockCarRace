@@ -1,11 +1,13 @@
 #include "ArduinoQuadratureEncoder.hpp"
 #include "BenchTest.hpp"
+#include "MPU6050IMU.hpp"
 #include "MonitorInput.hpp"
 #include "PulseCalibration.hpp"
 #include "TankDrivetrain.hpp"
 #include "TeamOneMotorController.hpp"
 #include "ultrasonic.hpp"
 #include <Arduino_RouterBridge.h>
+#include <Wire.h>
 #include <math.h>
 
 // UNO Q header pins. Set each direction so a positive command moves the car
@@ -20,8 +22,15 @@ constexpr unsigned long ESC_ARM_MS =
     5000; // Allow time for ESC startup and arming.
 constexpr unsigned int ESC_ARM_BLINK_WAIT_MS = 100;
 
-enum class DriveMode { Idle, BenchTest, EncoderTest, PulseCalibration, PrototypeCourse };
-constexpr DriveMode DRIVE_MODE = DriveMode::EncoderTest;
+// Pulses that gave ~600 deg/s (~28 in/s on a 69 mm radius wheel) in the air
+// tests
+const int A_PLUS = 1597, A_MINUS = 1376;
+const int B_PLUS = 1594, B_MINUS = 1370;
+
+enum class DriveMode { Idle, BenchTest, EncoderTest, HeadingTest, PulseCalibration, PrototypeCourse };
+constexpr DriveMode DRIVE_MODE = DriveMode::HeadingTest;
+// A flat IMU with +Z pointing up reports a positive yaw for a left turn.
+constexpr bool IMU_YAW_REVERSED = false;
 
 // Sensor Pin Definitions
 constexpr uint8_t ULTRASONIC_TRIG_PIN = 2;
@@ -31,6 +40,7 @@ constexpr unsigned long SENSOR_PERIOD_MS = 60;
 
 // REV Through Bore encoders produce 2048 cycles per shaft revolution.
 // The quadrature decoder counts all four edges in each cycle.
+constexpr int32_t ENCODER_COUNTS_PER_REV = 8192;
 constexpr uint8_t LEFT_ENCODER_A_PIN = 4;
 constexpr uint8_t LEFT_ENCODER_B_PIN = 5;
 constexpr uint8_t RIGHT_ENCODER_A_PIN = 7;
@@ -58,6 +68,14 @@ void setup() {
   // The Servo library keeps sending neutral pulses during this wait.
   drivetrain.stop();
   Monitor.println("Holding ESCs at neutral for arming.");
+  if (DRIVE_MODE == DriveMode::HeadingTest) {
+    Wire.begin();
+    MPU6050IMU imu;
+    if (imu.begin()) {
+      runHeadingBenchTest(drivetrain, imu, IMU_YAW_REVERSED);
+    }
+    return;
+  }
   waitForMonitorMessage(Monitor, "Waiting for a monitor message to continue...");
   // for (unsigned int i = 0; i < ESC_ARM_MS;) {
   //   digitalWrite(LED_BUILTIN, LOW);

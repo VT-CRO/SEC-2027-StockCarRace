@@ -180,3 +180,19 @@ It prints both settle to check that it rotated exactly 360 degreesch move so you
 Each move times out after 15 seconds and returns both ESCs to neutral. Restart
 the app to repeat the test. The encoder channels are on D4/D5 (left) and D7/D6 (right).
 The ultrasonic trigger and echo are on D2 and D3.
+
+### Test IMU heading hold
+
+With `DriveMode::HeadingTest` selected, start the app, power on the robot,
+and let the ESCs arm. Set the car on a flat, clear straightaway and aim it
+down the line. Send `run 8 0.25 0.2` in the Serial Monitor and leave the car
+still while the gyro calibrates for about two seconds. The arguments are
+duration in seconds, base throttle, and proportional heading gain. Use
+`run 8 0.25 0` to compare with steering correction disabled. Both ESCs return
+to neutral and the Monitor reports final and peak heading deviation.
+
+`IMU_YAW_REVERSED` in `sketch.ino` assumes the sensor's +Z axis points up
+when set to `false`. To check the sign, send `yaw`, hold the car still through
+calibration, then turn it left by hand when prompted. Hold the new angle until
+the test prints final yaw. The motors stay at neutral. If final yaw is negative
+after a left turn, flip `IMU_YAW_REVERSED` and repeat the check.

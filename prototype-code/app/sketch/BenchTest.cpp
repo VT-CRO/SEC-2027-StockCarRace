@@ -2,6 +2,9 @@
 #include "MonitorInput.hpp"
 #include <Arduino.h>
 #include <Arduino_RouterBridge.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 namespace {
 constexpr float TEST_COMMAND = 0.25;
@@ -24,6 +27,99 @@ void runBenchTest(TankDrivetrain &drivetrain) {
   testWheel(drivetrain, "Right forward", 0, TEST_COMMAND);
   testWheel(drivetrain, "Right reverse", 0, -TEST_COMMAND);
   Monitor.println("Bench test complete; holding neutral.");
+}
+
+void runHeadingBenchTest(TankDrivetrain &drivetrain, IMU &imu, bool yawReversed) {
+  constexpr unsigned long SAMPLE_MS = 10;
+  constexpr float MAX_TRIM = 0.06f;
+  constexpr float DEG_PER_RAD = 57.29578f;
+  constexpr float MAX_DEVIATION_DEG = 20.0f;
+  const float yawSign = yawReversed ? -1.0f : 1.0f;
+  MonitorCommandReader reader(Monitor);
+  discardMonitorInput(Monitor);
+  Monitor.println("Align the car and keep it still. Send run 8 0.25 0.2 or yaw.");
+  Monitor.println("Format: run <seconds> <throttle> <Kp>. yaw checks direction with motors at neutral.");
+
+  while (true) {
+    const auto command = reader.poll();
+    if (command == MonitorCommandReader::Result::Pending) {
+      delay(10);
+      continue;
+    }
+    const char *text = reader.command();
+    const bool yawCheck = command == MonitorCommandReader::Result::Command &&
+                          strcmp(text, "yaw") == 0;
+    float seconds = 0.0f, throttle = 0.0f, kp = 0.0f;
+    if (!yawCheck) {
+      if (command == MonitorCommandReader::Result::Command &&
+          strncmp(text, "run ", 4) == 0) {
+        const char *field = text + 4;
+        float *const values[] = {&seconds, &throttle, &kp};
+        for (float *value : values) {
+          char *end = nullptr;
+          *value = strtof(field, &end);
+          if (end == field || (*end != ' ' && *end != '\0')) {
+            seconds = 0.0f;
+            break;
+          }
+          field = end;
+        }
+        while (*field == ' ') {
+          ++field;
+        }
+        if (*field != '\0') {
+          seconds = 0.0f;
+        }
+      }
+      if (!(seconds >= 1.0f && seconds <= 15.0f && throttle >= 0.10f &&
+            throttle <= 0.35f && kp >= 0.0f && kp <= 1.0f)) {
+        Monitor.println("Use yaw or run <1-15 seconds> <0.10-0.35 throttle> <0-1 Kp>.");
+        continue;
+      }
+    }
+
+    Monitor.println("Keep the car still while the gyro calibrates.");
+    if (!imu.calibrate()) {
+      continue;
+    }
+
+    imu.resetHeading(0.0f);
+    if (yawCheck) {
+      Monitor.println("Turn the car left by hand now. Corrected yaw should become positive.");
+    }
+    const unsigned long runMs = yawCheck ? 5000 : static_cast<unsigned long>(seconds * 1000.0f);
+    const char *result = "Heading trial complete.";
+    float headingDeg = 0.0f;
+    float peakDeviationDeg = 0.0f;
+    const unsigned long started = millis();
+    while (millis() - started < runMs) {
+      if (!imu.update()) {
+        result = "Heading trial stopped: IMU read failed.";
+        break;
+      }
+      const float yaw = imu.getHeadingRads() * yawSign;
+      headingDeg = yaw * DEG_PER_RAD;
+      peakDeviationDeg = fmaxf(peakDeviationDeg, fabsf(headingDeg));
+      if (!yawCheck && peakDeviationDeg >= MAX_DEVIATION_DEG) {
+        result = "Heading trial stopped: yaw exceeded 20 degrees.";
+        break;
+      }
+      // Positive yaw is a left turn. Add left throttle to steer back right.
+      if (!yawCheck) {
+        const float trim = constrain(kp * yaw, -MAX_TRIM, MAX_TRIM);
+        drivetrain.runOpenLoop(throttle + trim, throttle - trim);
+      }
+      delay(SAMPLE_MS);
+    }
+    drivetrain.stop();
+
+    Monitor.println(result);
+    Monitor.print("Final yaw (deg): ");
+    Monitor.println(headingDeg);
+    Monitor.print("Peak yaw deviation (deg): ");
+    Monitor.println(peakDeviationDeg);
+    discardMonitorInput(Monitor);
+  }
 }
 
 namespace {
