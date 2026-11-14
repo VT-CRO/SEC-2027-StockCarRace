@@ -141,8 +141,7 @@ Arduino IDE, select **Arduino UNO Q**, install **Servo 1.3.0** in Library Manage
    then stays at neutral until restart. The test runs again on every restart in this mode.
 3. If a wheel labeled forward spins backward, flip that side's `*_ESC_REVERSED` flag and
    repeat. Set `DRIVE_MODE` back to `Idle` after testing. `PrototypeCourse` opts into the old
-   timed driving and ultrasonic avoidance routine; its timings need to be tuned for the new
-   chassis. The controller commands throttle and has no wheel speed or distance feedback.
+   course routine below.
 
 ### Calibrate ESC pulses in the Serial Monitor
 
@@ -229,3 +228,54 @@ RPM per radian. Gyro correction can shift each target by up to 25% of the
 base RPM. Start with a target both wheels can reach and adjust the starting
 throttles if one wheel launches late. After each run, compare average RPM,
 peak RPM difference, and, with the gyro enabled, peak yaw deviation.
+
+### Run the prototype course
+
+Adjust course distances, steering gains, and pivot settings at the top of
+`PrototypeCourse.cpp`. Wheel diameter and hardware settings are in `sketch.ino`.
+
+Select `DriveMode::PrototypeCourse`. After the ESCs arm, line up the robot at the start
+of the right-side straight, facing towards the track. Send `start` in the
+Serial Monitor and keep the car still while the gyro calibrates. Send `stop`
+to interrupt a run. After stopping, realign the car at the starting point
+before sending `start` again.
+
+The straights use the same controller as `both`, with base throttles
+0.20 and 0.25, wheel gain 0.25, and gyro gain 0.35. Average encoder travel
+ends each straight. Each 90° left pivot slows near its gyro target, then
+checks the settled angle and makes short corrections if needed. The next
+straight starts within 5° of target. The course repeats four
+straight-and-turn segments per lap and stops after three laps.
+
+Send `straight` to check the first leg and stop before the pivot. The Monitor
+reports estimated inches and average wheel revolutions at the turn-in point.
+The one-time launch from the start square is 62 inches. After the first left
+pivot, the upper loop alternates 18-inch cross-track and 42-inch long legs.
+The distance calculation uses the measured 67 mm wheel diameter.
+
+### Track-test handoff
+
+One of eight logged attempts completed three laps using the 62 / 18 / 42-inch
+course settings. Keep those distances as the baseline while diagnosing the
+failures below. The log has no lap times, so the 40-second target is unverified.
+
+- **Runaway pivots (two attempts).** The robot spun rapidly during the failed
+  pivots. The Monitor reported settled heading errors of 149.91° and 174.59°.
+  These are wrapped errors relative to the target heading. The turn code
+  recomputes the commanded direction from that error on every update, even
+  during a correction pulse. Isolate one pivot and log yaw, the target, and
+  both throttle commands through the correction pulses. Check for direction
+  changes and stop the pivot on a large overshoot before retrying full laps.
+- **IMU read failures (two attempts).** The operator noticed these around
+  turns. A single failed read stops the course. Check that the IMU and its
+  connections are secure, then see whether reads fail during a powered pivot.
+  Loose wiring and motor-related electrical interference are possible causes.
+- **Straight-line wobble and wall contact (three heading cutoffs).** The
+  operator saw the car weave into a wall on several runs. The logged cutoffs
+  were all near −20°, after 10.10 inches on the first short leg, 55.86 inches
+  on the entry, and 7.56 inches on the first long leg. The cutoff measures
+  heading and can trigger after wall contact. Retest `straight` at lower
+  throttle and watch lateral clearance as well as heading.
+
+Start by checking the IMU wiring, then isolate a pivot and retest a straight
+before running the full course again.

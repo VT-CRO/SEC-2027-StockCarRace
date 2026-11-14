@@ -3,12 +3,11 @@
 #include "MPU6050IMU.hpp"
 #include "MonitorInput.hpp"
 #include "PulseCalibration.hpp"
+#include "PrototypeCourse.hpp"
 #include "TankDrivetrain.hpp"
 #include "TeamOneMotorController.hpp"
-#include "ultrasonic.hpp"
 #include <Arduino_RouterBridge.h>
 #include <Wire.h>
-#include <math.h>
 
 // UNO Q header pins. Set each direction so a positive command moves the car
 // forward.
@@ -20,26 +19,16 @@ constexpr int LEFT_ESC_NEUTRAL_US = 1450;
 constexpr int RIGHT_ESC_NEUTRAL_US = 1450;
 constexpr unsigned long ESC_ARM_MS =
     5000; // Allow time for ESC startup and arming.
-constexpr unsigned int ESC_ARM_BLINK_WAIT_MS = 100;
-
-// Pulses that gave ~600 deg/s (~28 in/s on a 69 mm radius wheel) in the air
-// tests
-const int A_PLUS = 1597, A_MINUS = 1376;
-const int B_PLUS = 1594, B_MINUS = 1370;
-
 enum class DriveMode {
   Idle, BenchTest, EncoderTest, HeadingTest, StraightTest, PulseCalibration,
   PrototypeCourse
 };
-constexpr DriveMode DRIVE_MODE = DriveMode::StraightTest;
+// Select another mode for bench tests or calibration.
+constexpr DriveMode DRIVE_MODE = DriveMode::PrototypeCourse;
 // A flat IMU with +Z pointing up reports a positive yaw for a left turn.
 constexpr bool IMU_YAW_REVERSED = false;
 
-// Sensor Pin Definitions
-constexpr uint8_t ULTRASONIC_TRIG_PIN = 2;
-constexpr uint8_t ULTRASONIC_ECHO_PIN = 3;
-constexpr long OBSTACLE_DISTANCE_CM = 30;
-constexpr unsigned long SENSOR_PERIOD_MS = 60;
+constexpr float WHEEL_DIAMETER_MM = 67.0f;
 
 // REV Through Bore encoders produce 2048 cycles per shaft revolution.
 // The quadrature decoder counts all four edges in each cycle.
@@ -59,6 +48,12 @@ ArduinoQuadratureEncoder leftEncoder(LEFT_ENCODER_A_PIN, LEFT_ENCODER_B_PIN,
 ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
                                       ENCODER_COUNTS_PER_REV, RIGHT_ENCODER_REVERSED);
 
+MPU6050IMU courseImu;
+PrototypeCourse course(drivetrain, leftEncoder, rightEncoder, courseImu, Monitor,
+                       WHEEL_DIAMETER_MM, IMU_YAW_REVERSED);
+
+static void runSelectedTest();
+
 void setup() {
   // Servo repeats neutral while we wait for ESC power and Monitor input.
   leftMotor.begin();
@@ -71,119 +66,19 @@ void setup() {
   // The Servo library keeps sending neutral pulses during this wait.
   drivetrain.stop();
   Monitor.println("Holding ESCs at neutral for arming.");
-  if (DRIVE_MODE == DriveMode::StraightTest) {
-    const bool leftReady = leftEncoder.begin();
-    const bool rightReady = rightEncoder.begin();
-    if (!leftReady || !rightReady) {
-      Monitor.println("Straight test unavailable: both encoders must initialize.");
-      return;
-    }
-    Wire.begin();
-    MPU6050IMU imu;
-    const bool imuReady = imu.begin();
-    runStraightBenchTest(drivetrain, leftEncoder, rightEncoder,
-                         imuReady ? &imu : nullptr, IMU_YAW_REVERSED);
+  if (DRIVE_MODE != DriveMode::PrototypeCourse) {
+    runSelectedTest();
     return;
   }
-  if (DRIVE_MODE == DriveMode::HeadingTest) {
-    Wire.begin();
-    MPU6050IMU imu;
-    if (imu.begin()) {
-      runHeadingBenchTest(drivetrain, imu, IMU_YAW_REVERSED);
-    }
+
+  // The course needs both encoders for distance and the gyro for heading.
+  Wire.begin();
+  if (!course.initializeSensors()) {
+    Monitor.println("Course unavailable: encoder or IMU initialization failed.");
     return;
   }
-  waitForMonitorMessage(Monitor, "Waiting for a monitor message to continue...");
-  // for (unsigned int i = 0; i < ESC_ARM_MS;) {
-  //   digitalWrite(LED_BUILTIN, LOW);
-  //   delay(ESC_ARM_BLINK_WAIT_MS);
-  //   digitalWrite(LED_BUILTIN, HIGH);
-  //   delay(ESC_ARM_BLINK_WAIT_MS);
-  //   i += ESC_ARM_BLINK_WAIT_MS * 2;
-  // }
-
-  const bool leftEncoderReady = leftEncoder.begin();
-  const bool rightEncoderReady = rightEncoder.begin();
-
-  Monitor.println(leftEncoderReady ? "Left encoder initialized." : "Left encoder initialization failed.");
-  Monitor.println(rightEncoderReady ? "Right encoder initialized." : "Right encoder initialization failed.");
-  if (!leftEncoderReady || !rightEncoderReady) {
-    // while (true) {
-    //   delay(1000);
-    // }
-  }
-
-  if (DRIVE_MODE == DriveMode::PulseCalibration) {
-    Monitor.println("Sending neutral to both ESCs. Power on the robot and let the ESCs arm.");
-    delay(ESC_ARM_MS);
-    discardMonitorInput(Monitor);
-    runPulseCalibration(Monitor, leftMotor, rightMotor);
-  } else if (DRIVE_MODE == DriveMode::EncoderTest) {
-    runEncoderBenchTest(drivetrain, leftEncoder, rightEncoder);
-  } else if (DRIVE_MODE == DriveMode::BenchTest) {
-    runBenchTest(drivetrain);
-  } else if (DRIVE_MODE == DriveMode::PrototypeCourse) {
-    // pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);
-    // pinMode(ULTRASONIC_ECHO_PIN, INPUT);
-    // digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
-  }
-}
-
-/*
-This function is currently very naive. It:
-- Drives forward for 1 millisecond
-    - If it sees an obstacle, it does a preplanned avoidance routine
-    - If durationMs has elapsed, it stops
-*/
-void driveAndAvoidObstacles(float leftVelocity, float rightVelocity,
-                            unsigned long durationMs) {
-  const unsigned long endTime = millis() + durationMs;
-  unsigned long lastSensorRead = 0;
-
-  while (millis() < endTime) {
-    // drivetrain.runOpenLoop(leftVelocity, rightVelocity);
-
-    const unsigned long now = millis();
-    if (now - lastSensorRead >= SENSOR_PERIOD_MS) {
-      lastSensorRead = now;
-
-      const long distanceCm =
-          readDistanceCm(ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN);
-      if (distanceCm > 0 && distanceCm <= OBSTACLE_DISTANCE_CM) {
-        // TODO: Test IRL and figure out how to account for avoiding the
-        // obstacle in the path
-        driveAroundObstacle();
-      }
-    }
-    delay(1);
-  }
-
-  // drivetrain.stop();
-}
-
-void driveAroundObstacle() {
-  // drivetrain.stop();
-  delay(150);
-
-  // drivetrain.runOpenLoop(-0.5, 0.5);
-  delay(500);
-
-  // drivetrain.runOpenLoop(0.5, 0.5);
-  delay(900);
-
-  // drivetrain.runOpenLoop(0.5, -0.5);
-  delay(500);
-
-  // drivetrain.runOpenLoop(0.5, 0.5);
-  delay(1800);
-
-  // drivetrain.runOpenLoop(0.5, -0.5);
-  delay(500);
-
-  // drivetrain.runOpenLoop(0.5, 0.5);
-  delay(900);
-
-  // drivetrain.stop();
+  discardMonitorInput(Monitor);
+  Monitor.println("Let ESCs arm. Send straight to check the first leg, start to run laps, or stop.");
 }
 
 void loop() {
@@ -192,17 +87,75 @@ void loop() {
     return;
   }
 
-  Monitor.println("Driving down straightaway");
-  //   driveAndAvoidObstacles(0.5, 0.5, 3000);
-  drivetrain.runOpenLoop(0.3, 0.3);
-  delay(3000);
+  // Start calibrates the gyro while stationary. Stop sets both ESCs to neutral
+  // before another drive update can run.
+  if (!course.pollRunCommands()) {
+    const unsigned long now = millis();
+    float yawDegrees;
+    if (course.sampleHeadingError(now, yawDegrees)) {
+      switch (course.state()) {
+      case PrototypeCourse::CourseState::Straight:
+        course.updateStraight(now, yawDegrees);
+        break;
+      case PrototypeCourse::CourseState::Turn:
+        course.updateTurn(now, yawDegrees);
+        break;
+      case PrototypeCourse::CourseState::Settle:
+        course.updateSettle(now, yawDegrees);
+        break;
+      case PrototypeCourse::CourseState::Idle:
+        break;
+      }
+    }
+  }
+  delay(1);
+}
 
-  // Monitor.println("Driving around corner");
-  // //   driveAndAvoidObstacles(0.25, 0.5, 6000);
-  // drivetrain.runOpenLoop(0.25, 0.5);
-  // delay(6000);
+static bool initializeTestEncoders() {
+  const bool leftReady = leftEncoder.begin();
+  const bool rightReady = rightEncoder.begin();
+  Monitor.println(leftReady ? "Left encoder initialized." : "Left encoder initialization failed.");
+  Monitor.println(rightReady ? "Right encoder initialized." : "Right encoder initialization failed.");
+  return leftReady && rightReady;
+}
 
-  // drivetrain.stop();
-  // Monitor.println("Pausing");
-  // delay(1000);
+// Dispatch the optional bench modes selected at the top of the sketch.
+static void runSelectedTest() {
+  // Heading and straight tests have their own Monitor start commands.
+  if (DRIVE_MODE == DriveMode::HeadingTest || DRIVE_MODE == DriveMode::StraightTest) {
+    if (DRIVE_MODE == DriveMode::StraightTest && !initializeTestEncoders()) {
+      return;
+    }
+
+    Wire.begin();
+    const bool imuReady = courseImu.begin();
+    if (DRIVE_MODE == DriveMode::StraightTest) {
+      // Encoder-only comparisons still work if the gyro is unavailable.
+      runStraightBenchTest(drivetrain, leftEncoder, rightEncoder,
+                           imuReady ? &courseImu : nullptr, IMU_YAW_REVERSED);
+    } else if (imuReady) {
+      runHeadingBenchTest(drivetrain, courseImu, IMU_YAW_REVERSED);
+    }
+    return;
+  }
+
+  waitForMonitorMessage(Monitor, "Waiting for a monitor message to continue...");
+  switch (DRIVE_MODE) {
+  case DriveMode::PulseCalibration:
+    Monitor.println("Sending neutral to both ESCs. Power on the robot and let the ESCs arm.");
+    delay(ESC_ARM_MS);
+    discardMonitorInput(Monitor);
+    runPulseCalibration(Monitor, leftMotor, rightMotor);
+    break;
+  case DriveMode::EncoderTest:
+    if (initializeTestEncoders()) {
+      runEncoderBenchTest(drivetrain, leftEncoder, rightEncoder);
+    }
+    break;
+  case DriveMode::BenchTest:
+    runBenchTest(drivetrain);
+    break;
+  default:
+    break;
+  }
 }
