@@ -1,5 +1,6 @@
 #include "BenchTest.hpp"
 #include "MonitorInput.hpp"
+#include "StraightDrive.hpp"
 #include <Arduino.h>
 #include <Arduino_RouterBridge.h>
 #include <cmath>
@@ -367,8 +368,8 @@ bool readStraightTrial(const char *fields, StraightTrial &trial, bool combined) 
 void runStraightTrial(TankDrivetrain &drivetrain, RelativeEncoder &left,
                       RelativeEncoder &right, IMU *imu, float yawSign,
                       const StraightTrial &trial) {
-  constexpr float MAX_TRIM = 0.10f;
-  constexpr float MAX_THROTTLE = 0.45f;
+  const StraightDriveTuning tuning{trial.leftBase, trial.rightBase,
+                                   trial.wheelKp, trial.yawKp};
   constexpr float DEG_PER_RAD = 57.29578f;
   constexpr unsigned long SAMPLE_MS = 10;
   const unsigned long durationMs = static_cast<unsigned long>(trial.seconds * 1000.0f);
@@ -393,29 +394,24 @@ void runStraightTrial(TankDrivetrain &drivetrain, RelativeEncoder &left,
   float peakWheelGap = 0.0f;
   const unsigned long started = millis();
   while (millis() - started < durationMs) {
-    float targetGap = 0.0f;
+    float yaw = 0.0f;
     if (imu) {
       if (!imu->update()) {
         result = "Straight trial stopped: IMU read failed.";
         break;
       }
-      const float yaw = imu->getHeadingRads() * yawSign;
+      yaw = imu->getHeadingRads() * yawSign;
       yawDeg = yaw * DEG_PER_RAD;
       peakYawDeg = fmaxf(peakYawDeg, fabsf(yawDeg));
       if (peakYawDeg >= 20.0f) {
         result = "Straight trial stopped: yaw exceeded 20 degrees.";
         break;
       }
-      // Positive yaw is leftward, so request more left-wheel travel.
-      targetGap = trial.yawKp * yaw;
     }
 
     const float wheelGap = left.revolutions() - right.revolutions();
     peakWheelGap = fmaxf(peakWheelGap, fabsf(wheelGap));
-    const float trim = constrain(trial.wheelKp * (targetGap - wheelGap),
-                                 -MAX_TRIM, MAX_TRIM);
-    drivetrain.runOpenLoop(constrain(trial.leftBase + trim, 0.0f, MAX_THROTTLE),
-                           constrain(trial.rightBase - trim, 0.0f, MAX_THROTTLE));
+    driveStraight(drivetrain, tuning, wheelGap, yaw);
     delay(SAMPLE_MS);
   }
   drivetrain.stop();
