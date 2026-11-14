@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MonitorInput.hpp"
+#include <Arduino.h>
 
 class IMU;
 class RelativeEncoder;
@@ -11,16 +11,16 @@ class TankDrivetrain;
 class PrototypeCourse {
 public:
   PrototypeCourse(TankDrivetrain &drivetrain, RelativeEncoder &left,
-                  RelativeEncoder &right, IMU &imu, Stream &monitor,
+                  RelativeEncoder &right, IMU &imu,
                   float wheelDiameterMm, bool yawReversed);
   enum class CourseState { Idle, Straight, Turn, Settle };
 
   // Require both encoders and the gyro before accepting motion commands.
   bool initializeSensors();
-  // True when start, straight, or stop consumed this pass through loop().
-  bool pollRunCommands();
+  // Calibrate while stationary, then start the entry straight.
+  bool start(bool straightOnly);
   // Read a fresh heading at the control interval. False skips this update
-  // while idle, between samples, or after a failed read has stopped the car.
+  // while idle, between samples, or while holding neutral after a failed read.
   bool sampleHeadingError(unsigned long now, float &yawDegrees);
   CourseState state() const;
 
@@ -30,16 +30,13 @@ public:
   void updateSettle(unsigned long now, float yawDegrees);
 
 private:
-  bool handleCommand(unsigned long now);
-  void stopCourse(const char *message);
+  void stopCourse();
   void beginCourseStraight(unsigned long now);
 
   TankDrivetrain &drivetrain;
   RelativeEncoder &leftEncoder;
   RelativeEncoder &rightEncoder;
   IMU &courseImu;
-  Stream &monitor;
-  MonitorCommandReader courseCommands;
   const float wheelInchesPerRev;
   const float yawSign;
 
@@ -52,7 +49,6 @@ private:
   unsigned long stateStarted = 0;
   unsigned long turnStarted = 0; // Start time for the pivot and all corrections.
   unsigned long lastCourseUpdate = 0;
-  unsigned long lastCourseInput = 0;
   float desiredHeading = 0.0f; // Radians, matching the IMU interface.
   float leftStart = 0.0f;
   float rightStart = 0.0f;

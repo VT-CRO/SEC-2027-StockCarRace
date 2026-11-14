@@ -11,22 +11,33 @@
 
 // UNO Q header pins. Set each direction so a positive command moves the car
 // forward.
-constexpr uint8_t LEFT_ESC_PIN = 11;
+constexpr uint8_t LEFT_ESC_PIN = 10;
 constexpr uint8_t RIGHT_ESC_PIN = 9;
 constexpr bool LEFT_ESC_REVERSED = true;
 constexpr bool RIGHT_ESC_REVERSED = false;
 constexpr int LEFT_ESC_NEUTRAL_US = 1450;
 constexpr int RIGHT_ESC_NEUTRAL_US = 1450;
 constexpr unsigned long ESC_ARM_MS =
-    5000; // Allow time for ESC startup and arming.
+    10000; // Allow time for ESC startup and arming.
 enum class DriveMode {
   Idle, BenchTest, EncoderTest, HeadingTest, StraightTest, PulseCalibration,
-  PrototypeCourse
+  StandalonePulseTest, PrototypeCourse
 };
 // Select another mode for bench tests or calibration.
 constexpr DriveMode DRIVE_MODE = DriveMode::PrototypeCourse;
+
+// Raw ESC pulses for one automatic trial with the wheels raised. Set either
+// side to its neutral constant to test the other wheel by itself.
+constexpr int TEST_LEFT_PULSE_US = 1625; // Low forward command on the left.
+constexpr int TEST_RIGHT_PULSE_US = RIGHT_ESC_NEUTRAL_US;
+constexpr unsigned long TEST_PULSE_DURATION_MS = 2000;
 // A flat IMU with +Z pointing up reports a positive yaw for a left turn.
 constexpr bool IMU_YAW_REVERSED = false;
+
+// Hold neutral before automatic course startup so the ESCs have time to arm.
+constexpr unsigned long COURSE_START_WAIT_MS = 15000;
+// Set true to validate the launch straight without attempting a turn.
+constexpr bool COURSE_FIRST_STRAIGHT_ONLY = false;
 
 constexpr float WHEEL_DIAMETER_MM = 67.0f;
 
@@ -49,7 +60,7 @@ ArduinoQuadratureEncoder rightEncoder(RIGHT_ENCODER_A_PIN, RIGHT_ENCODER_B_PIN,
                                       ENCODER_COUNTS_PER_REV, RIGHT_ENCODER_REVERSED);
 
 MPU6050IMU courseImu;
-PrototypeCourse course(drivetrain, leftEncoder, rightEncoder, courseImu, Monitor,
+PrototypeCourse course(drivetrain, leftEncoder, rightEncoder, courseImu,
                        WHEEL_DIAMETER_MM, IMU_YAW_REVERSED);
 
 static void runSelectedTest();
@@ -58,27 +69,31 @@ void setup() {
   // Servo repeats neutral while we wait for ESC power and Monitor input.
   leftMotor.begin();
   rightMotor.begin();
-  Monitor.begin();
 
-  Monitor.println("Starting...");
+  if (DRIVE_MODE == DriveMode::StandalonePulseTest) {
+    delay(ESC_ARM_MS);
+    leftMotor.writePulseMicroseconds(TEST_LEFT_PULSE_US);
+    rightMotor.writePulseMicroseconds(TEST_RIGHT_PULSE_US);
+    delay(TEST_PULSE_DURATION_MS);
+    drivetrain.stop();
+    return;
+  }
 
-  // AM32 keeps drive disabled at startup until it sees a steady neutral signal.
-  // The Servo library keeps sending neutral pulses during this wait.
-  drivetrain.stop();
-  Monitor.println("Holding ESCs at neutral for arming.");
   if (DRIVE_MODE != DriveMode::PrototypeCourse) {
+    Monitor.begin();
+    Monitor.println("Holding ESCs at neutral for arming.");
     runSelectedTest();
     return;
   }
 
-  // The course needs both encoders for distance and the gyro for heading.
+  // Power the robot and align it before starting the sketch. Keep it still
+  // through ESC arming and gyro calibration. The course launches once.
+  delay(COURSE_START_WAIT_MS);
   Wire.begin();
-  if (!course.initializeSensors()) {
-    Monitor.println("Course unavailable: encoder or IMU initialization failed.");
-    return;
+  courseImu.setLoggingEnabled(false);
+  if (course.initializeSensors()) {
+    course.start(COURSE_FIRST_STRAIGHT_ONLY);
   }
-  discardMonitorInput(Monitor);
-  Monitor.println("Let ESCs arm. Send straight to check the first leg, start to run laps, or stop.");
 }
 
 void loop() {
@@ -87,25 +102,21 @@ void loop() {
     return;
   }
 
-  // Start calibrates the gyro while stationary. Stop sets both ESCs to neutral
-  // before another drive update can run.
-  if (!course.pollRunCommands()) {
-    const unsigned long now = millis();
-    float yawDegrees;
-    if (course.sampleHeadingError(now, yawDegrees)) {
-      switch (course.state()) {
-      case PrototypeCourse::CourseState::Straight:
-        course.updateStraight(now, yawDegrees);
-        break;
-      case PrototypeCourse::CourseState::Turn:
-        course.updateTurn(now, yawDegrees);
-        break;
-      case PrototypeCourse::CourseState::Settle:
-        course.updateSettle(now, yawDegrees);
-        break;
-      case PrototypeCourse::CourseState::Idle:
-        break;
-      }
+  const unsigned long now = millis();
+  float yawDegrees;
+  if (course.sampleHeadingError(now, yawDegrees)) {
+    switch (course.state()) {
+    case PrototypeCourse::CourseState::Straight:
+      course.updateStraight(now, yawDegrees);
+      break;
+    case PrototypeCourse::CourseState::Turn:
+      course.updateTurn(now, yawDegrees);
+      break;
+    case PrototypeCourse::CourseState::Settle:
+      course.updateSettle(now, yawDegrees);
+      break;
+    case PrototypeCourse::CourseState::Idle:
+      break;
     }
   }
   delay(1);

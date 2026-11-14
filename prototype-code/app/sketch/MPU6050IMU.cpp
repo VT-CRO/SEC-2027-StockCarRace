@@ -16,6 +16,10 @@ MPU6050IMU::MPU6050IMU(uint8_t mpu_i2c_id)
       gyro_scale(MPU6050IMUConstants::GYRO_SCALE_250_DPS), bias(0.0f),
       last_read(0), headingRads(0.0f) {}
 
+void MPU6050IMU::setLoggingEnabled(bool enabled) {
+  loggingEnabled = enabled;
+}
+
 bool MPU6050IMU::begin() {
   Wire.beginTransmission(mpu_i2c_id);
   if (Wire.endTransmission() != 0) {
@@ -34,9 +38,11 @@ bool MPU6050IMU::begin() {
   // Make sure to mark that we've never read heading
   last_read = 0;
 
-  Monitor.print("[MPU6050 ");
-  Monitor.print(mpu_i2c_id, HEX);
-  Monitor.println("] Initialized Successfully.");
+  if (loggingEnabled) {
+    Monitor.print("[MPU6050 ");
+    Monitor.print(mpu_i2c_id, HEX);
+    Monitor.println("] Initialized Successfully.");
+  }
 
   return true;
 }
@@ -68,11 +74,13 @@ bool MPU6050IMU::calibrate() {
   last_read = 0;
   headingRads = 0.0f;
 
-  Monitor.print("[MPU6050 ");
-  Monitor.print(mpu_i2c_id, HEX);
-  Monitor.print("] Calibrated with bias: ");
-  Monitor.print(bias);
-  Monitor.println(" rad/s average.");
+  if (loggingEnabled) {
+    Monitor.print("[MPU6050 ");
+    Monitor.print(mpu_i2c_id, HEX);
+    Monitor.print("] Calibrated with bias: ");
+    Monitor.print(bias);
+    Monitor.println(" rad/s average.");
+  }
 
   return true;
 }
@@ -85,12 +93,13 @@ bool MPU6050IMU::update() {
 
   // Get angular velocity
   float gyroZRadPerSec;
-  bool success = getGyroZRadPerSec(&gyroZRadPerSec);
-
-  // Don't integrate with garbage data from i2c error
-  if (!success) {
-    last_read = 0;
-    return false;
+  if (!getGyroZRadPerSec(&gyroZRadPerSec)) {
+    // Retry the full exchange once and timestamp the new sample attempt.
+    now = micros();
+    if (!getGyroZRadPerSec(&gyroZRadPerSec)) {
+      last_read = 0;
+      return false;
+    }
   }
 
   // Integrate and add to heading
@@ -111,6 +120,9 @@ void MPU6050IMU::resetHeading(float newHeading) {
 }
 
 void MPU6050IMU::print_error(const char *message) {
+  if (!loggingEnabled) {
+    return;
+  }
   Monitor.print("[MPU6050 ");
   Monitor.print(mpu_i2c_id, HEX);
   Monitor.print("] ERROR: ");

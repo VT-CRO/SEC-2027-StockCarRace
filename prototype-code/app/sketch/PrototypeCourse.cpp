@@ -5,7 +5,6 @@
 #include "TankDrivetrain.hpp"
 #include "wrapAngle.hpp"
 #include <math.h>
-#include <string.h>
 
 namespace {
 // Distances refer to the drive axle midpoint.
@@ -19,8 +18,6 @@ constexpr unsigned COURSE_LAPS = 3;
 constexpr unsigned LEGS_PER_LAP = 4;
 // Minimum time between gyro samples and course control updates while driving.
 constexpr unsigned long CONTROL_INTERVAL_MS = 10;
-// Minimum time between Serial Monitor polls for start, straight, and stop.
-constexpr unsigned long COMMAND_INTERVAL_MS = 50;
 constexpr unsigned long STRAIGHT_TIMEOUT_MS = 10000;
 constexpr float STRAIGHT_HEADING_LIMIT_DEG = 20.0f;
 
@@ -30,6 +27,8 @@ constexpr float PIVOT_RIGHT = 0.30f; // Right wheel drives forward and needs mor
 constexpr float TURN_SLOW_ZONE_DEG = 40.0f; // Reduce throttle within this angle of the target.
 constexpr float MIN_PIVOT_SCALE = 0.70f; // Keep enough throttle to turn near the target.
 constexpr float TURN_TOLERANCE_DEG = 5.0f; // Accept this much error after coasting.
+// Abort a left pivot if the chassis passes its target by this angle.
+constexpr float MAX_PIVOT_OVERSHOOT_DEG = 30.0f;
 constexpr unsigned long TURN_TIMEOUT_MS = 4500; // Total pivot budget, including corrections.
 constexpr unsigned long TRIM_PULSE_MS = 80; // Maximum powered time for one angle correction.
 constexpr unsigned long SETTLE_MS = 250; // Hold neutral before checking the angle again.
@@ -43,10 +42,10 @@ constexpr StraightDriveTuning STRAIGHT_TUNING{
 } // namespace
 
 PrototypeCourse::PrototypeCourse(TankDrivetrain &drivetrain, RelativeEncoder &left,
-                                 RelativeEncoder &right, IMU &imu, Stream &monitor,
+                                 RelativeEncoder &right, IMU &imu,
                                  float wheelDiameterMm, bool yawReversed)
     : drivetrain(drivetrain), leftEncoder(left), rightEncoder(right),
-      courseImu(imu), monitor(monitor), courseCommands(monitor),
+      courseImu(imu),
       wheelInchesPerRev(wheelDiameterMm * static_cast<float>(M_PI) / MM_PER_INCH),
       yawSign(yawReversed ? -1.0f : 1.0f) {}
 
@@ -58,10 +57,9 @@ bool PrototypeCourse::initializeSensors() {
   return ready;
 }
 
-void PrototypeCourse::stopCourse(const char *message) {
+void PrototypeCourse::stopCourse() {
   drivetrain.stop();
   courseState = CourseState::Idle;
-  monitor.println(message);
 }
 
 void PrototypeCourse::beginCourseStraight(unsigned long now) {
@@ -72,40 +70,18 @@ void PrototypeCourse::beginCourseStraight(unsigned long now) {
   courseState = CourseState::Straight;
 }
 
-bool PrototypeCourse::handleCommand(unsigned long now) {
-  if (now - lastCourseInput < COMMAND_INTERVAL_MS) {
+bool PrototypeCourse::start(bool straightOnly) {
+  if (!ready || courseState != CourseState::Idle || !courseImu.calibrate()) {
     return false;
   }
-  lastCourseInput = now;
-  if (courseCommands.poll() != MonitorCommandReader::Result::Command) {
-    return false;
-  }
-  const char *command = courseCommands.command();
-  if (strcmp(command, "stop") == 0) {
-    stopCourse("Course stopped. Send start to restart.");
-    return true;
-  }
-  const bool straightCheck = strcmp(command, "straight") == 0;
-  if (courseState != CourseState::Idle ||
-      (!straightCheck && strcmp(command, "start") != 0)) {
-    return false;
-  }
-
-  monitor.println("Keep the car still while the gyro calibrates.");
-  if (courseImu.calibrate()) {
-    courseImu.resetHeading(0.0f);
-    desiredHeading = 0.0f;
-    courseLeg = 0;
-    enteringCourse = true;
-    firstStraightOnly = straightCheck;
-    discardMonitorInput(monitor);
-    beginCourseStraight(millis());
-  }
+  courseImu.resetHeading(0.0f);
+  desiredHeading = 0.0f;
+  courseLeg = 0;
+  enteringCourse = true;
+  firstStraightOnly = straightOnly;
+  lastCourseUpdate = millis();
+  beginCourseStraight(lastCourseUpdate);
   return true;
-}
-
-bool PrototypeCourse::pollRunCommands() {
-  return ready && handleCommand(millis());
 }
 
 PrototypeCourse::CourseState PrototypeCourse::state() const {
@@ -121,12 +97,20 @@ bool PrototypeCourse::sampleHeadingError(unsigned long now, float &yawDegrees) {
   }
   lastCourseUpdate = now;
   if (!courseImu.update()) {
-    stopCourse("Course stopped: IMU read failed.");
+    // Hold neutral while waiting for fresh heading data. Leave the segment
+    // active so the next control update can retry the read.
+    drivetrain.stop();
     return false;
   }
   const float heading = courseImu.getHeadingRads() * yawSign;
   // Use the shortest signed angle across the gyro's wrap at ±180 degrees.
   yawDegrees = wrapAngle(heading - desiredHeading) * DEG_PER_RAD;
+  // The course pivots left, so positive error means it passed the target.
+  if ((courseState == CourseState::Turn || courseState == CourseState::Settle) &&
+      yawDegrees >= MAX_PIVOT_OVERSHOOT_DEG) {
+    stopCourse();
+    return false;
+  }
   return true;
 }
 
@@ -145,17 +129,13 @@ void PrototypeCourse::updateStraight(unsigned long now, float yawDegrees) {
   const float targetInches = enteringCourse ? ENTRY_INCHES :
       (courseLeg % 2 == 0 ? SHORT_INCHES : LONG_INCHES);
   if (elapsed >= STRAIGHT_TIMEOUT_MS) {
-    stopCourse("Course stopped: straight timed out.");
+    stopCourse();
   } else if (fabsf(yawDegrees) >= STRAIGHT_HEADING_LIMIT_DEG) {
-    stopCourse("Course stopped: heading error reached 20 degrees.");
+    stopCourse();
   } else if (distanceInches >= targetInches) {
     drivetrain.stop();
-    monitor.print("Straight target reached. Estimated inches: ");
-    monitor.print(distanceInches);
-    monitor.print(" | Average wheel revolutions: ");
-    monitor.println(wheelRevs);
     if (firstStraightOnly) {
-      stopCourse("First straight complete. Both ESCs at neutral.");
+      stopCourse();
       return;
     }
     // Advance from the intended heading so turn errors don't accumulate each lap.
@@ -167,12 +147,6 @@ void PrototypeCourse::updateStraight(unsigned long now, float yawDegrees) {
   } else {
     driveStraight(drivetrain, STRAIGHT_TUNING, leftTravel - rightTravel, yawDegrees * RADS_PER_DEG);
   }
-  if (courseState == CourseState::Idle) {
-    monitor.print("Estimated inches: ");
-    monitor.print(distanceInches);
-    monitor.print(" | Heading error (deg): ");
-    monitor.println(yawDegrees);
-  }
 }
 
 // Steer toward the target heading, slowing the initial pivot near the target.
@@ -183,9 +157,7 @@ void PrototypeCourse::updateTurn(unsigned long now, float yawDegrees) {
   const unsigned long elapsed = now - stateStarted;
   const float remaining = fabsf(yawDegrees);
   if (now - turnStarted >= TURN_TIMEOUT_MS) {
-    stopCourse("Course stopped: turn timeout.");
-    monitor.print("Turn heading error (deg): ");
-    monitor.println(yawDegrees);
+    stopCourse();
   } else if (remaining <= TURN_TOLERANCE_DEG ||
              (!trimmingTurn && yawDegrees > 0.0f) ||
              (trimmingTurn && elapsed >= TRIM_PULSE_MS)) {
@@ -212,9 +184,7 @@ void PrototypeCourse::updateSettle(unsigned long now, float yawDegrees) {
   }
   if (fabsf(yawDegrees) > TURN_TOLERANCE_DEG) {
     if (now - turnStarted >= TURN_TIMEOUT_MS) {
-      stopCourse("Course stopped: pivot did not settle on target.");
-      monitor.print("Settled heading error (deg): ");
-      monitor.println(yawDegrees);
+      stopCourse();
     } else {
       // Reset the pulse timer while retaining the overall turn deadline.
       stateStarted = now;
@@ -224,8 +194,6 @@ void PrototypeCourse::updateSettle(unsigned long now, float yawDegrees) {
     return;
   }
 
-  monitor.print("Pivot settled. Heading error (deg): ");
-  monitor.println(yawDegrees);
   // The entry pivot joins the loop. Only subsequent pivots count toward laps.
   if (enteringCourse) {
     enteringCourse = false;
@@ -233,7 +201,7 @@ void PrototypeCourse::updateSettle(unsigned long now, float yawDegrees) {
     ++courseLeg;
   }
   if (courseLeg == COURSE_LAPS * LEGS_PER_LAP) {
-    stopCourse("Course complete. Send start to run again.");
+    stopCourse();
   } else {
     beginCourseStraight(millis());
   }

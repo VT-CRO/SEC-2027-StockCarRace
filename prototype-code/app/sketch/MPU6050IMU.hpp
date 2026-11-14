@@ -41,9 +41,10 @@ public:
 
   /**
    * Begins communication and initializes the MPU6050.
-   * MUST BE CALLED AFTER Serial.begin and Wire.begin!!!
+   * Call after Wire.begin(). Disable logging before begin() for standalone use.
    */
   bool begin() override;
+  void setLoggingEnabled(bool enabled);
 
   bool calibrate() override;
 
@@ -65,6 +66,7 @@ private:
   // gyroZOut / gyro_scale = angular velocity in deg/sec
   const float gyro_scale;
   float bias;
+  bool loggingEnabled = true;
 
   // Microsecond timestamp of the last heading read
   // If last_read is zero, the heading has never been read and so last_read
