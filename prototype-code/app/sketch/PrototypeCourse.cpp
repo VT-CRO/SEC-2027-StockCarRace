@@ -12,8 +12,8 @@ constexpr float MM_PER_INCH = 25.4f;
 constexpr float RADS_PER_DEG = static_cast<float>(M_PI) / 180.0f;
 constexpr float DEG_PER_RAD = 1.0f / RADS_PER_DEG;
 constexpr float ENTRY_INCHES = 61.0f; // Starting square to the first turn, once per run.
-constexpr float SHORT_INCHES = 17.0f; // Distance across the short edges between turns.
-constexpr float LONG_INCHES = 42.0f; // Along the long straights between turns.
+constexpr float SHORT_INCHES = 16.5f; // Distance across the short edges between turns.
+constexpr float LONG_INCHES = 41.5f; // Along the long straights between turns.
 constexpr unsigned COURSE_LAPS = 3;
 constexpr unsigned LEGS_PER_LAP = 4;
 // Minimum time between gyro samples and course control updates while driving.
@@ -29,15 +29,15 @@ constexpr float MIN_PIVOT_SCALE = 0.70f; // Keep enough throttle to turn near th
 constexpr float TURN_TOLERANCE_DEG = 5.0f; // Accept this much error after coasting.
 // Abort a left pivot if the chassis passes its target by this angle.
 constexpr float MAX_PIVOT_OVERSHOOT_DEG = 30.0f;
-constexpr unsigned long TURN_TIMEOUT_MS = 4500; // Total pivot budget, including corrections.
+constexpr unsigned long TURN_TIMEOUT_MS = 8000; // Total pivot budget, including corrections.
 constexpr unsigned long TRIM_PULSE_MS = 80; // Maximum powered time for one angle correction.
 constexpr unsigned long SETTLE_MS = 250; // Hold neutral before checking the angle again.
 
 constexpr StraightDriveTuning STRAIGHT_TUNING{
     0.20f, // Left base throttle before feedback.
     0.25f, // Right base throttle, higher to help it launch.
-    0.25f, // Throttle correction per revolution of wheel-travel error.
-    0.35f, // Desired wheel-travel difference per radian of heading error.
+    0.23f, // Throttle correction per revolution of wheel-travel error.
+    0.29f, // Desired wheel-travel difference per radian of heading error.
 };
 } // namespace
 
